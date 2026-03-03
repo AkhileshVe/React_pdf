@@ -8,7 +8,8 @@ import {
     Image,
     PDFDownloadLink
 } from "@react-pdf/renderer";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { generateBankData,sbiDataDynamic } from "./sbiNew_data";
 import dayjs from "dayjs";
 import sbiLogo from "../../assets/sbi-logo.png";
 import transactions from "./sbiData"
@@ -21,15 +22,28 @@ const sixMonthsAgo = dayjs().subtract(6, "month");
 
 const formattedToday = today.format("DD MMM YYYY");
 const formattedSixMonthsAgo = sixMonthsAgo.format("DD MMM YYYY");
+let transactionss = [2,4,6,8,12,13,15,17,20,34] 
 
-const filteredTransactions = transactions.filter(txn =>
-    dayjs(txn.txnDate, "DD MMM YYYY").isAfter(sixMonthsAgo)
+const filteredTransactions = transactionss.map(txn =>{
+     return( dayjs().subtract(txn, "days").format("DD MMM YYYY"))}
 );
 
 
+const sixMonths = dayjs().subtract(6, "days");
+const formattedSixMonths = sixMonths.format("DD MMM YYYY");
 
-console.log(filteredTransactions);
-console.log(formattedToday);
+const generateRandom4 = () => {
+  return Math.floor(1000 + Math.random() * 9000);
+};
+const changeSpecific = (str) => {
+  return str.replace(/\d+/g, (num) => {
+    if (num.length > 6) {
+      const random4 = generateRandom4();
+      return num.slice(0, 4) + random4 + num.slice(-4);
+    }
+    return num;
+  });
+};
 
 const styles = StyleSheet.create({
     page: {
@@ -258,8 +272,8 @@ const MyDocument = ({ name }) => (
                         <View style={styles.tableRow} key={index}>
                             <Text style={styles.tableColDate}>{item.txnDate}</Text>
                             <Text style={styles.tableColDate}>{item.valueDate}</Text>
-                            <Text style={styles.tableColDis}>{item.description}</Text>
-                            <Text style={styles.tableColRef}>{item.refNo}</Text>
+                            <Text style={styles.tableColDis}>{changeSpecific(item.description)}</Text>
+                            <Text style={styles.tableColRef}>{changeSpecific(item.refNo)}</Text>
                             <Text style={styles.tableCol}>{item.debit}</Text>
                             <Text style={styles.tableCol}> {item.credit}</Text>
                             <Text style={styles.tableCol}>{item.balance}</Text>
@@ -279,6 +293,30 @@ function SbiPDF() {
 
 
     const [name, setName] = useState("Jayprakash Rajput")
+    const [bankData, setBankData] = useState([]);
+    const [finalData, setFinalData] = useState([]);
+
+  useEffect(() => {
+
+    const generated = generateBankData({
+      openingBalance: 50000,
+      salaryAmount: 65000,
+      totalRows: 236
+    });
+
+    setBankData(generated);
+
+    const merged = sbiDataDynamic.map((item, index) => ({
+      ...item,
+      debit: generated[index]?.debit ?? null,
+      credit: generated[index]?.credit ?? null,
+      balance: generated[index]?.balance ?? null,
+    }));
+
+    setFinalData(merged);
+
+  }, []);
+
     return (
         <div>
 
