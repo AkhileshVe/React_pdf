@@ -24,10 +24,11 @@ const formattedToday = today.format("DD MMM YYYY");
 const formattedSixMonthsAgo = sixMonthsAgo.format("DD MMM YYYY");
 let transactionss = [2,4,6,8,12,13,15,17,20,34] 
 
-const filteredTransactions = transactionss.map(txn =>{
-     return( dayjs().subtract(txn, "days").format("DD MMM YYYY"))}
+const filteredTransactions = sbiDataDynamic.map(txn =>{
+     return( dayjs().subtract(txn.txnDate, "days").format("DD MMM YYYY"))}
 );
 
+console.log(filteredTransactions,"@@@@@@@@@@@llllllllllll")
 
 const sixMonths = dayjs().subtract(6, "days");
 const formattedSixMonths = sixMonths.format("DD MMM YYYY");
@@ -164,7 +165,7 @@ const styles = StyleSheet.create({
     }
 });
 
-const MyDocument = ({ name }) => (
+const MyDocument = ({ name,finalData }) => (
 
     <Document>
         <Page size="A4" style={styles.page}>
@@ -267,11 +268,15 @@ const MyDocument = ({ name }) => (
                 </View>
                 <br />
                 {/* Row 1 */}
-                {originaldata.map((item, index) => {
+                {finalData.map((item, index) => {
                     return (
                         <View style={styles.tableRow} key={index}>
-                            <Text style={styles.tableColDate}>{item.txnDate}</Text>
-                            <Text style={styles.tableColDate}>{item.valueDate}</Text>
+                            <Text style={styles.tableColDate}>{
+                                 dayjs().subtract(item.txnDate, "days").format("D MMM YYYY")
+                            }</Text>
+                            <Text style={styles.tableColDate}>{
+                            dayjs().subtract(item.valueDate, "days").format("D MMM YYYY")
+                            }</Text>
                             <Text style={styles.tableColDis}>{changeSpecific(item.description)}</Text>
                             <Text style={styles.tableColRef}>{changeSpecific(item.refNo)}</Text>
                             <Text style={styles.tableCol}>{item.debit}</Text>
@@ -314,7 +319,6 @@ function SbiPDF() {
     }));
 
     setFinalData(merged);
-
   }, []);
 
     return (
@@ -325,9 +329,9 @@ function SbiPDF() {
                 onChange={(e) => setName(e.target.value)}
             />
             <PDFViewer width="100%" height="600"  >
-                <MyDocument name={name} />
+                <MyDocument name={name} finalData={finalData} />
             </PDFViewer>
-            <PDFDownloadLink document={<MyDocument name={name} />} fileName="1643187072367f6n02eHnEKt3QtUM.pdf">
+            <PDFDownloadLink document={<MyDocument name={name} finalData={finalData} />} fileName="1643187072367f6n02eHnEKt3QtUM.pdf">
                 {({ loading }) =>
                     loading ? "Generating PDF..." : "Download SBI Statement"
                 }

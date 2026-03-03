@@ -4,9 +4,12 @@ export function generateBankData({
   totalRows = 236
 }) {
 
-  let balance = openingBalance;
+  let balance = Number(openingBalance.toFixed(2));
   let rows = [];
+
   let lineCount = 0;
+  let interestCounter = 0;
+  let salaryCounter = 0;
 
   const debitValues = [
     955, 200, 1100, 200, 100, 200, 770, 300, 920,
@@ -19,72 +22,79 @@ export function generateBankData({
 
   while (lineCount < totalRows) {
 
-    const debitCount = Math.floor(Math.random() * 6) + 15;
+    // 🔹 Debit Transaction
+    const debit = debitValues[Math.floor(Math.random() * debitValues.length)];
 
-    for (let i = 0; i < debitCount && lineCount < totalRows; i++) {
-      const debit = debitValues[Math.floor(Math.random() * debitValues.length)];
-      balance -= debit;
+    balance = Number((balance - debit).toFixed(2));
 
-      rows.push({
-        debit,
-        credit: null,
-        balance
-      });
+    rows.push({
+      debit: debit.toFixed(2),
+      credit: null,
+      balance: balance.toFixed(2)
+    });
 
-      lineCount++;
-    }
+    lineCount++;
+    interestCounter++;
+    salaryCounter++;
 
-    if (lineCount < totalRows) {
-      balance += salaryAmount;
-      rows.push({
-        debit: null,
-        credit: salaryAmount,
-        balance
-      });
-      lineCount++;
-    }
-
-    if (lineCount < totalRows) {
+    // 🔥 Interest every 10–11 txns (independent)
+    if (interestCounter >= (Math.random() > 0.5 ? 10 : 11)) {
       const interest = 215.39;
-      balance += interest;
+      balance = Number((balance + interest).toFixed(2));
+
       rows.push({
         debit: null,
-        credit: interest,
-        balance
+        credit: interest.toFixed(2),
+        balance: balance.toFixed(2)
       });
+
       lineCount++;
+      interestCounter = 0;
+    }
+
+    // 🔥 Salary every 30 debit transactions (independent)
+    if (salaryCounter >= 30) {
+      balance = Number((balance + salaryAmount).toFixed(2));
+
+      rows.push({
+        debit: null,
+        credit: salaryAmount.toFixed(2),
+        balance: balance.toFixed(2)
+      });
+
+      lineCount++;
+      salaryCounter = 0;
     }
   }
 
   return rows;
 }
 
-
 export const sbiDataDynamic = [
-{ txnDate:2, valueDate: 2, description  :"TO TRANSFER- UPI/DR/405766387708/MEENAS/AIRP/7764208537/Payme-", refNo: "TRANSFER TO 4698818875927" },
+{ txnDate:2, valueDate: 2, description  :"TO TRANSFER- UPI/DR/405766387708/MEENA S/AIRP/7764208537/Payme-", refNo: "TRANSFER TO 4698818875927" },
 { txnDate:3, valueDate: 3, description  :"TO TRANSFER- UPI/DR/608174669424/GEETAT/IDIB/8646475352/Payme-", refNo : "TRANSFER TO 4891326431869" },
 { txnDate:4, valueDate: 4, description  :"TO TRANSFER- UPI/DR/893169323488/SAVITA/CNRB/8774009477/Payme-", refNo : "TRANSFER TO 4896655703197" },
 { txnDate:5, valueDate: 5, description  :"TO TRANSFER- UPI/DR/327581649439/NEHAD/BKID/9712705802/Payme-" , refNo : "TRANSFER TO 4894815662381" },
 { txnDate:6, valueDate: 6, description  :"TO TRANSFER- UPI/DR/158923804954/KOMALS/KKBK/9209741429/Payme-", refNo : "TRANSFER TO 4693871985757" },
 { txnDate:7, valueDate: 7, description  :"TO TRANSFER- UPI/DR/948691177553/RAVIB/IDFB/7479023636/Payme-" , refNo : "TRANSFER TO 4898101951531" },
-{ txnDate:8, valueDate: 8, description  :"TO TRANSFER- UPI/DR/328374737993/AMITT/YESB/8638409133/Payme-" , refNo : "TRANSFER TO 4893682919945" },
-{ txnDate:9, valueDate: 9, description  :"TO TRANSFER- UPI/DR/110773077011/VIJAYG/BARB/8132633953/Payme-", refNo : "TRANSFER TO 4691283793404" },
-{ txnDate:10, valueDate: 10, description  :"TO TRANSFER- UPI/DR/151257055812/PANKAJ/UBIN/7661768183/Payme-", refNo : "TRANSFER TO 4698153565564" },
-{ txnDate:11, valueDate: 11, description  :"TO TRANSFER- UPI/DR/472992917870/ASHOKS/CBIN/8247049167/Payme-", refNo : "TRANSFER TO 4699199326896" },
-{ txnDate:13, valueDate: 13, description  :"TO TRANSFER- UPI/DR/731524472806/SAVITA/YESB/9720330047/Payme-", refNo : "TRANSFER TO 4695408284083" },
-{ txnDate:15, valueDate: 15, description  :"TO TRANSFER- UPI/DR/623811260679/SANJAY/ICIC/8848099739/Payme-", refNo : "TRANSFER TO 4893389459247" },
-{ txnDate:16, valueDate: 16, description  :"BY TRANSFER- NEFT*SBIN0000743*SBIN255536851586*AIR INDIA LIMITED*Salary-", refNo:"TRANSFER FROM 4696115258012" },
+{ txnDate:8, valueDate: 8, description  :"TO TRANSFER- UPI/DR/328374737993/AMITT/ YESB/8638409133/Payme-" , refNo : "TRANSFER TO 4893682919945" },
+{ txnDate:9, valueDate: 9, description  :"TO TRANSFER- UPI/DR/110773077011/VIJAY G/BARB/8132633953/Payme-", refNo : "TRANSFER TO 4691283793404" },
+{ txnDate:10, valueDate: 10, description  :"TO TRANSFER- UPI/DR/151257055812/PANKAJ /UBIN/7661768183/Payme-", refNo : "TRANSFER TO 4698153565564" },
+{ txnDate:11, valueDate: 11, description  :"TO TRANSFER- UPI/DR/472992917870/ASHOKS /CBIN/8247049167/Payme-", refNo : "TRANSFER TO 4699199326896" },
+{ txnDate:13, valueDate: 13, description  :"TO TRANSFER- UPI/DR/731524472806/SAVITA /YESB/9720330047/Payme-", refNo : "TRANSFER TO 4695408284083" },
+{ txnDate:15, valueDate: 15, description  :"TO TRANSFER- UPI/DR/623811260679/SANJA  Y/ICIC/8848099739/Payme-", refNo : "TRANSFER TO 4893389459247" },
+{ txnDate:16, valueDate: 16, description  :"BY TRANSFER- NEFT*SBIN0000743*SBI N255536851586*AIR INDIA LIMITED*Salary-", refNo:"TRANSFER FROM 4696115258012" },
 { txnDate:17, valueDate: 17, description  :"TO TRANSFER- UPI/DR/439711231030/MAHESH/CNRB/7593674571/Payme-", refNo : "TRANSFER TO 4895470669076" },
-{ txnDate:18, valueDate: 18, description  :"TO TRANSFER- UPI/DR/718436366523/PRAVEE/PUNB/8718439411/Payme-", refNo : "TRANSFER TO 4893613016775" },
-{ txnDate:19, valueDate: 19, description  :"TO TRANSFER- UPI/DR/765269185616/SUREND/UTIB/7809054320/Payme-", refNo : "TRANSFER TO 4898900329179" },
-{ txnDate:19, valueDate: 19, description  :"TO TRANSFER- UPI/DR/825334196747/MEENAR/AIRP/9720093778/Payme-", refNo : "TRANSFER TO 4696574661660" },
-{ txnDate:20, valueDate: 20, description  :"TO TRANSFER- UPI/DR/102250506218/YOGESH/IDIB/9627785698/Payme-", refNo : "TRANSFER TO 4692226071571" },
+{ txnDate:18, valueDate: 18, description  :"TO TRANSFER- UPI/DR/718436366523/PRAVEE /PUNB/8718439411/Payme-", refNo : "TRANSFER TO 4893613016775" },
+{ txnDate:19, valueDate: 19, description  :"TO TRANSFER- UPI/DR/765269185616/SUREN D/UTIB/7809054320/Payme-", refNo : "TRANSFER TO 4898900329179" },
+{ txnDate:19, valueDate: 19, description  :"TO TRANSFER- UPI/DR/825334196747/MEENAR /AIRP/9720093778/Payme-", refNo : "TRANSFER TO 4696574661660" },
+{ txnDate:20, valueDate: 20, description  :"TO TRANSFER- UPI/DR/102250506218/YOGESH /IDIB/9627785698/Payme-", refNo : "TRANSFER TO 4692226071571" },
 { txnDate:21, valueDate: 21, description  :"TO TRANSFER- UPI/DR/285746299136/SWATIC/CBIN/8808381907/Payme-", refNo : "TRANSFER TO 4893932761655" },
-{ txnDate:22, valueDate: 22, description  :"TO TRANSFER- UPI/DR/400970077049/ANITAP/KKBK/7982433909/Payme-", refNo : "TRANSFER TO 4692350121047" },
-{ txnDate:24, valueDate: 24, description  :"TO TRANSFER- UPI/DR/995084909810/RAMESH/SBIN/9637335608/Payme-", refNo : "TRANSFER TO 4699755845390" },
-{ txnDate:25, valueDate: 25, description  :"TO TRANSFER- UPI/DR/733623052000/MANOJD/HDFC/7693575679/Payme-", refNo : "TRANSFER TO 4895210617365" },
-{ txnDate:26, valueDate: 26, description  :"TO TRANSFER- UPI/DR/516349982578/SAVITA/YESB/7037922117/Payme-", refNo : "TRANSFER TO 4694636633671" },
-{ txnDate:27, valueDate: 27, description  :"TO TRANSFER- UPI/DR/525390126672/SEEMAB/BKID/7876809650/Payme-", refNo : "TRANSFER TO 4896165084747" },
+{ txnDate:22, valueDate: 22, description  :"TO TRANSFER- UPI/DR/400970077049/ANITAP /KKBK/7982433909/Payme-", refNo : "TRANSFER TO 4692350121047" },
+{ txnDate:24, valueDate: 24, description  :"TO TRANSFER- UPI/DR/995084909810/RAMESH /SBIN/9637335608/Payme-", refNo : "TRANSFER TO 4699755845390" },
+{ txnDate:25, valueDate: 25, description  :"TO TRANSFER- UPI/DR/733623052000/MANOJD /HDFC/7693575679/Payme-", refNo : "TRANSFER TO 4895210617365" },
+{ txnDate:26, valueDate: 26, description  :"TO TRANSFER- UPI/DR/516349982578/SAVITA /YESB/7037922117/Payme-", refNo : "TRANSFER TO 4694636633671" },
+{ txnDate:27, valueDate: 27, description  :"TO TRANSFER- UPI/DR/525390126672/SEEMAB /BKID/7876809650/Payme-", refNo : "TRANSFER TO 4896165084747" },
 { txnDate:28, valueDate: 28, description  :"CREDIT INTEREST-- ", refNo : "TRANSFER TO 4698516982301" },
 { txnDate:29, valueDate: 29, description  :"TO TRANSFER- UPI/DR/537819773692/RAMESH/BKID/9986289944/Payme-", refNo : "TRANSFER TO 4698083078012" },
 { txnDate:29, valueDate: 29, description  :"TO TRANSFER- UPI/DR/333368192271/IMRANV/KKBK/8594562639/Payme-", refNo : "TRANSFER TO 4692031408826" },
