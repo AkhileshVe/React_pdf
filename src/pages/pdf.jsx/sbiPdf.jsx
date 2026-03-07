@@ -8,52 +8,106 @@ import {
     Image,
     PDFDownloadLink
 } from "@react-pdf/renderer";
+import Navbar from "../NavBar";
+import { Font } from "@react-pdf/renderer";
+Font.register({
+    family: "Roboto",
+    fonts: [
+        { src: "../../assets/fonts/Roboto-Regular.ttf" },
+        { src: "../../assets/fonts/Roboto-Bold.ttf", fontWeight: "bold" }
+    ]
+});
+
+const formatMoney = (num) => {
+    if (num === null || num === undefined) return "";
+    return Number(num).toLocaleString("en-IN", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+};
 import { useEffect, useState } from "react";
-import { generateBankData,sbiDataDynamic } from "./sbiNew_data";
+import { generateBankData, sbiDataDynamic } from "./sbiNew_data";
 import dayjs from "dayjs";
 import sbiLogo from "../../assets/sbi-logo.png";
 import transactions from "./sbiData"
 import { sbidatata } from "./sbiData"
 import { originaldata } from "./sbiData"
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const today = dayjs();
 const sixMonthsAgo = dayjs().subtract(6, "month");
 
 const formattedToday = today.format("DD MMM YYYY");
 const formattedSixMonthsAgo = sixMonthsAgo.format("DD MMM YYYY");
-let transactionss = [2,4,6,8,12,13,15,17,20,34] 
+let transactionss = [2, 4, 6, 8, 12, 13, 15, 17, 20, 34]
 
-const filteredTransactions = sbiDataDynamic.map(txn =>{
-     return( dayjs().subtract(txn.txnDate, "days").format("DD MMM YYYY"))}
+const filteredTransactions = sbiDataDynamic.map(txn => {
+    return (dayjs().subtract(txn.txnDate, "days").format("DD MMM YYYY"))
+}
 );
 
-console.log(filteredTransactions,"@@@@@@@@@@@llllllllllll")
+// console.log(filteredTransactions, "@@@@@@@@@@@llllllllllll")
 
 const sixMonths = dayjs().subtract(6, "days");
 const formattedSixMonths = sixMonths.format("DD MMM YYYY");
 
 const generateRandom4 = () => {
-  return Math.floor(1000 + Math.random() * 9000);
+    return Math.floor(1000 + Math.random() * 9000);
 };
 const changeSpecific = (str) => {
-  return str.replace(/\d+/g, (num) => {
-    if (num.length > 6) {
-      const random4 = generateRandom4();
-      return num.slice(0, 4) + random4 + num.slice(-4);
-    }
-    return num;
+    return str.replace(/\d+/g, (num) => {
+        if (num.length > 6) {
+            const random4 = generateRandom4();
+            return num.slice(0, 4) + random4 + num.slice(-4);
+        }
+        return num;
+    });
+};
+
+const randomNames = [
+  "MEENA",
+  "GEETA",
+  "MONU",
+  "NEHA",
+  "KOMAL",
+  "RAVI",
+  "AMIT",
+  "RAHUL",
+  "SONU",
+  "VIKAS",
+];
+
+
+const changeDescription = (str, companyName) => {
+
+  let updated = str.replace(/\d{12}/g, (num) => {
+    const random4 = generateRandom4();
+    return num.slice(0, 4) + random4 + num.slice(-4);
   });
+
+  updated = updated.replace(
+    /(MEENA|GEETAT|SAVITA|NEHAD|KOMAL S|RAVI|AMIT)/,
+    randomNames[Math.floor(Math.random() * randomNames.length)]
+  );
+
+  if(companyName){
+     updated = updated.replace(/AIR INDIA LIMITED/, companyName);
+  }
+
+  return updated;
 };
 
 const styles = StyleSheet.create({
     page: {
+        fontFamily: "Helvetica",
         padding: 30,
-        fontSize: 10
+        fontSize: 9.7
     },
     header: {
         fontSize: 16,
-        marginBottom: 10
+        marginBottom: 10,
+        fontWeight: "normal",
+        fontFamily: "Helvetica"
     },
     section: {
         marginBottom: 10
@@ -62,10 +116,7 @@ const styles = StyleSheet.create({
         display: "table",
         width: "100%",
         borderStyle: "solid",
-        // borderWidth: 1,
-        borderRightWidth: 0,
-        borderLeftWidth: 1,
-        borderBottomWidth: 0,
+
     },
     tableRow: {
         flexDirection: "row"
@@ -74,16 +125,18 @@ const styles = StyleSheet.create({
         width: "14%",
         padding: 2,
         fontWeight: "bold",
+        fontFamily: "Helvetica",
         textAlign: "right",
         borderStyle: "solid",
         borderWidth: 1,
         borderLeftWidth: 0,
         borderTopWidth: 1,
-        fontWeight: "bold"
     },
     tableCol: {
         width: "14%",
-        padding: 2,
+        paddingTop: 2,
+        paddingHorizontal: 2,
+        paddingBottom: 2.5,
         textAlign: "right",
         borderStyle: "solid",
         borderWidth: 1,
@@ -92,39 +145,49 @@ const styles = StyleSheet.create({
     },
     tableColHeaderDate: {
         width: "12%",
-        padding: 2,
-        fontWeight: "bold",
+        paddingTop: 2,
+        paddingHorizontal: 2,
+        borderLeftWidth: 1,
+        paddingBottom: 2.5,
         borderStyle: "solid",
-        borderWidth: 1,
-        borderLeftWidth: 0,
-        borderTopWidth: 0,
         fontWeight: "bold",
+        fontFamily: "Helvetica",
         borderTopWidth: 1,
+        borderBottomWidth: 1
     },
     tableColDate: {
         width: "12%",
-        padding: 2,
+        paddingTop: 2,
+        paddingHorizontal: 2,
+        borderLeftWidth: 1,
+        borderRigthWidth: 0,
+        paddingBottom: 2.5,
         textAlign: "right",
         borderStyle: "solid",
-        borderWidth: 1,
-        borderLeftWidth: 0,
-        borderTopWidth: 0
+        //borderWidth: 1,
+        borderBottomWidth: 1
 
     },
 
     tableColHeaderDis: {
+        borderLeftWidth: 1,
         width: "32%",
-        padding: 2,
+        paddingTop: 2,
+        paddingHorizontal: 2,
+        paddingBottom: 2.5,
         fontWeight: "bold",
+        fontFamily: "Helvetica",
         borderStyle: "solid",
         borderWidth: 1,
         borderLeftWidth: 0,
         borderTopWidth: 1,
-        fontWeight: "bold"
     },
     tableColDis: {
-        width: "32%" ,
-        padding: 2,
+        borderLeftWidth: 1,
+        width: "32%",
+        paddingTop: 2,
+        paddingHorizontal: 2,
+        paddingBottom: 2.5,
         borderWidth: 1,
         borderLeftWidth: 0,
         borderTopWidth: 0,
@@ -132,23 +195,30 @@ const styles = StyleSheet.create({
     },
     tableColHeaderRef: {
         width: "18%",
-        padding: 2,
-        fontWeight: "bold",
+        paddingTop: 2,
+        paddingHorizontal: 2,
+        paddingBottom: 2.5,
         borderStyle: "solid",
         borderWidth: 1,
         borderLeftWidth: 0,
         borderTopWidth: 1,
-        fontWeight: "bold"
+        fontWeight: "bold",
+        fontFamily: "Helvetica"
     },
     tableColRef: {
         width: "18%",
-        padding: 2,
+        paddingTop: 2,
+        textAlign: "left",
+        paddingHorizontal: 2,
+        paddingBottom: 2.5,
         borderStyle: "solid",
         borderWidth: 1,
         borderLeftWidth: 0,
         borderTopWidth: 0,
-        padding: 4
+        // padding: 4
     },
+
+
 
     textst: {
         marginBottom: "6px"
@@ -165,7 +235,9 @@ const styles = StyleSheet.create({
     }
 });
 
-const MyDocument = ({ name,finalData }) => (
+const MyDocument = ({
+     companyName,finalData, accountName, address, date, accountNumber, accountDescription, branch, drawingPower, cifNo, ckycrNumber, ifsCode, micrCode, nominationRegistered, balance,
+}) => (
 
     <Document>
         <Page size="A4" style={styles.page}>
@@ -174,48 +246,48 @@ const MyDocument = ({ name,finalData }) => (
 
             <View style={styles.section}>
                 <View style={styles.textParent}> <Text style={styles.textst}>Account Name</Text>
-                    <Text style={{ marginLeft: 50 }}>: {name}</Text>
+                    <Text style={{ marginLeft: 55 }}>: {accountName ?? "Rajesh singh"}</Text>
                 </View>
                 <View style={styles.textParent}> <Text style={styles.textst}>Address</Text>
-                    <View style={{ width: 140, marginLeft: 80, display: "flex", flexDirection: "row" }}>
+                    <View style={{ width: 140, marginLeft: 83, display: "flex", flexDirection: "row" }}>
                         <Text>: </Text>
-                        <Text style={{ lineHeight: 0.8 }}>S/O: Jayprakash Rajput WARD 01 Mehangipura beraisa - 462038 bhopal</Text>
+                        <Text style={{ lineHeight: 0.8 }}>{address ?? "S/O: Jayprakash Rajput WARD 01 Mehangipura beraisa - 462038 bhopal"}</Text>
                     </View>
                 </View>
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>Date</Text>
-                    <Text style={{ marginLeft: 99 }}>: 21 Jan 2026 </Text>
+                    <Text style={{ marginLeft: 97 }}>: {date ?? "21 Jan 2026"} </Text>
                 </View>
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>Account Number</Text>
-                    <Text style={{ marginLeft: 44 }}>: 00000042511739493</Text>
+                    <Text style={{ marginLeft: 46 }}>: {accountNumber ?? "00000042511739493"}</Text>
                 </View>
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>Account Discription</Text>
-                    <Text style={{ marginLeft: 36 }}>: SBCHQ-SGSP-PUBIND-DIMOND-INR</Text>
+                    <Text style={{ marginLeft: 36 }}>: {accountDescription ?? "SBCHQ-SGSP-PUBIND-DIMOND-INR"}</Text>
                 </View>
 
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>Branch</Text>
-                    <Text style={{ marginLeft: 86 }}>: BERASIA MAIN ROAD</Text>
+                    <Text style={{ marginLeft: 89 }}>: {branch ?? "BERASIA MAIN ROAD"}</Text>
                 </View>
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>Drawing Power</Text>
-                    <Text style={{ marginLeft: 53 }}>: 0.00</Text>
+                    <Text style={{ marginLeft: 55 }}>: {drawingPower ?? "0.00"}</Text>
                 </View>
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>CIF No</Text>
-                    <Text style={{ marginLeft: 86 }}>: 67262931429</Text>
+                    <Text style={{ marginLeft: 89 }}>: {cifNo ?? "67262931429"}</Text>
                 </View>
 
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>CKYCR Number</Text>
-                    <Text style={{ marginLeft: 42 }}>: XXXXXXXXXXX1234</Text>
+                    <Text style={{ marginLeft: 47 }}>: {ckycrNumber ?? "XXXXXXXXXXX1234"}</Text>
                 </View>
 
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>IFS Code</Text>
-                    <Text style={{ marginLeft: 72 }}>: SBIN0001499</Text>
+                    <Text style={{ marginLeft: 77 }}>: {ifsCode ?? "SBIN0001499"}</Text>
                 </View>
 
                 <View style={styles.textParent}>
@@ -225,7 +297,7 @@ const MyDocument = ({ name,finalData }) => (
 
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>MICR Code</Text>
-                    <Text style={{ marginLeft: 62 }}>: 462002502</Text>
+                    <Text style={{ marginLeft: 65 }}>: {micrCode ?? "462002502"}</Text>
                 </View>
 
 
@@ -237,12 +309,12 @@ const MyDocument = ({ name,finalData }) => (
 
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>Nomination Registered</Text>
-                    <Text style={{ marginLeft: 12 }}>: No</Text>
+                    <Text style={{ marginLeft: 16 }}>: {nominationRegistered ?? "No"}</Text>
                 </View>
 
                 <View style={styles.textParent}>
-                    <Text style={styles.textst}>Balance as on 21 jul 2025</Text>
-                    <Text style={{ marginLeft: 6 }}>: 43,235.00</Text>
+                    <Text style={styles.textst}>Balance as on {formattedSixMonthsAgo}</Text>
+                    <Text style={{ marginLeft: 8 }}>: {balance}</Text>
                 </View>
                 <View style={styles.textParent}>
                     <Text style={{ fontSize: 12, marginTop: 10, marginBottom: 2 }}>Account Statement from {formattedSixMonthsAgo} to {formattedToday}</Text>
@@ -257,7 +329,7 @@ const MyDocument = ({ name,finalData }) => (
             <View style={styles.table}>
 
                 {/* Table Header */}
-                <View style={styles.tableRow} fixed={true}>
+                <View style={styles.tableRow} fixed={true} wrap={false}>
                     <Text style={styles.tableColHeaderDate}>Txn Date</Text>
                     <Text style={styles.tableColHeaderDate}>Value Date </Text>
                     <Text style={styles.tableColHeaderDis}>Description</Text>
@@ -269,19 +341,21 @@ const MyDocument = ({ name,finalData }) => (
                 <br />
                 {/* Row 1 */}
                 {finalData.map((item, index) => {
+
+
                     return (
-                        <View style={styles.tableRow} key={index}>
+                        <View style={styles.tableRow} key={index} wrap={false}>
                             <Text style={styles.tableColDate}>{
-                                 dayjs().subtract(item.txnDate, "days").format("D MMM YYYY")
+                                dayjs().subtract(item.txnDate, "days").format("D MMM YYYY")
                             }</Text>
                             <Text style={styles.tableColDate}>{
-                            dayjs().subtract(item.valueDate, "days").format("D MMM YYYY")
+                                dayjs().subtract(item.valueDate, "days").format("D MMM YYYY")
                             }</Text>
-                            <Text style={styles.tableColDis}>{changeSpecific(item.description)}</Text>
+                            <Text style={styles.tableColDis}>{changeDescription(item.description,companyName)}</Text>
                             <Text style={styles.tableColRef}>{changeSpecific(item.refNo)}</Text>
-                            <Text style={styles.tableCol}>{item.debit}</Text>
-                            <Text style={styles.tableCol}> {item.credit}</Text>
-                            <Text style={styles.tableCol}>{item.balance}</Text>
+                            <Text style={styles.tableCol}>{formatMoney(item.debit)}</Text>
+                            <Text style={styles.tableCol}> {formatMoney(item.credit)}</Text>
+                            <Text style={styles.tableCol}>{formatMoney(item.balance)}</Text>
                         </View>
                     )
 
@@ -296,42 +370,81 @@ const MyDocument = ({ name,finalData }) => (
 
 function SbiPDF() {
 
-
-    const [name, setName] = useState("Jayprakash Rajput")
     const [bankData, setBankData] = useState([]);
     const [finalData, setFinalData] = useState([]);
+    const [formData, setFormData] = useState(null);
+    const location = useLocation();
 
-  useEffect(() => {
+    useEffect(() => {
 
-    const generated = generateBankData({
-      openingBalance: 50000,
-      salaryAmount: 65000,
-      totalRows: 236
-    });
+        if (location.state) {
+            setFormData(location.state);
+        } else {
+            console.log("No navigation data found");
+        }
+        const generated = generateBankData({
+            openingBalance: 50000,
+            salaryAmount: 65000,
+            totalRows: 236
+        });
 
-    setBankData(generated);
+        setBankData(generated);
 
-    const merged = sbiDataDynamic.map((item, index) => ({
-      ...item,
-      debit: generated[index]?.debit ?? null,
-      credit: generated[index]?.credit ?? null,
-      balance: generated[index]?.balance ?? null,
-    }));
+        const merged = sbiDataDynamic.map((item, index) => ({
+            ...item,
+            debit: generated[index]?.debit ?? null,
+            credit: generated[index]?.credit ?? null,
+            balance: generated[index]?.balance ?? null,
+        }));
 
-    setFinalData(merged);
-  }, []);
+        setFinalData(merged);
+
+    }, [location.state]);
+
+    if (!formData) {
+        return <p>No data received</p>;
+    }
 
     return (
         <div>
+            <Navbar />
 
-            <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-            />
             <PDFViewer width="100%" height="600"  >
-                <MyDocument name={name} finalData={finalData} />
+                <MyDocument
+                    accountName={formData.accountName ?? ""}
+                    address={formData.address ?? ""}
+                    date={formData.date ?? ""}
+                    accountNumber={formData.accountNumber ?? ""}
+                    accountDescription={formData.accountDescription ?? ""}
+                    branch={formData.branch ?? ""}
+                    drawingPower={formData.drawingPower ?? ""}
+                    cifNo={formData.cifNo ?? ""}
+                    ckycrNumber={formData.ckycrNumber ?? ""}
+                    ifsCode={formData.ifsCode ?? ""}
+                    micrCode={formData.micrCode ?? ""}
+                    nominationRegistered={formData.nominationRegistered ?? ""}
+                    balance={formData.balance ?? ""}
+                    finalData={finalData}
+                    companyName={formData.salaryCompany ?? ""}
+                />
             </PDFViewer>
-            <PDFDownloadLink document={<MyDocument name={name} finalData={finalData} />} fileName="1643187072367f6n02eHnEKt3QtUM.pdf">
+            <PDFDownloadLink document={<MyDocument
+                accountName={formData.accountName ?? " "}
+                address={formData.address ?? ""}
+                date={formData.date ?? ""}
+                accountNumber={formData.accountNumber ?? ""}
+                accountDescription={formData.accountDescription ?? ""}
+                branch={formData.branch ?? ""}
+                drawingPower={formData.drawingPower ?? ""}
+                cifNo={formData.cifNo ?? ""}
+                ckycrNumber={formData.ckycrNumber ?? ""}
+                ifsCode={formData.ifsCode ?? ""}
+                micrCode={formData.micrCode ?? ""}
+                nominationRegistered={formData.nominationRegistered ?? ""}
+                balance={formData.balance ?? ""}
+                finalData={finalData}
+
+            />} fileName="1643187072367f6n02eHnEKt3QtUM.pdf">
                 {({ loading }) =>
                     loading ? "Generating PDF..." : "Download SBI Statement"
                 }
