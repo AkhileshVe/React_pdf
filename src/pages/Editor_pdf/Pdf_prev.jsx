@@ -1,9 +1,9 @@
 import { PDFViewer } from "@react-pdf/renderer";
 import BankStatement from "./bankstate";
-    import { PDFDownloadLink } from "@react-pdf/renderer";
+import { PDFDownloadLink } from "@react-pdf/renderer";
 
 function PdfPreview({ formData, transactions }) {
-
+    console.log("hello pdf")
   return (
  < >  <PDFViewer width="100%" height="100%">
       <BankStatement
@@ -11,8 +11,7 @@ function PdfPreview({ formData, transactions }) {
         transactions={transactions}
       />
     </PDFViewer>
-
-
+     
 <PDFDownloadLink
   document={<BankStatement formData={formData} transactions={transactions} />}
   fileName="bank-statement.pdf"
