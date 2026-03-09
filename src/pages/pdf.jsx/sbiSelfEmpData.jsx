@@ -24,12 +24,12 @@ function changeMiddle(num) {
 }
 
 const names = [
-  "MEENA","GEETA","SAVITA","NEHA","KOMAL",
-  "RAVI","AMIT","VIJAY","PANKAJ","ASHOK",
-  "SANJAY","RAHUL","IMRAN","YOGESH"
+  "MEENA", "GEETA", "SAVITA", "NEHA", "KOMAL",
+  "RAVI", "AMIT", "VIJAY", "PANKAJ", "ASHOK",
+  "SANJAY", "RAHUL", "IMRAN", "YOGESH"
 ];
 
-const banks = ["SBIN","HDFC","ICIC","KKBK","CNRB","YESB"];
+const banks = ["SBIN", "HDFC", "ICIC", "KKBK", "CNRB", "YESB"];
 
 const randomName = () => names[random(0, names.length - 1)];
 const randomBank = () => banks[random(0, banks.length - 1)];
@@ -78,69 +78,69 @@ export function generateSelfEmployeeBankData({
       currentMonth = monthKey;
 
       const daysInMonth = currentDate.daysInMonth();
-      const repeatCount = random(3,5);
+      const repeatCount = random(3, 5);
 
       repeatDays = [];
 
-      for (let i=0;i<repeatCount;i++){
-        repeatDays.push(random(1,daysInMonth));
+      for (let i = 0; i < repeatCount; i++) {
+        repeatDays.push(random(1, daysInMonth));
       }
     }
 
     const isRepeat = repeatDays.includes(currentDate.date());
-    const txnCount = isRepeat ? random(2,3) : 1;
+    const txnCount = isRepeat ? random(2, 3) : 1;
 
-    for (let i=0;i<txnCount;i++){
+    for (let i = 0; i < txnCount; i++) {
 
-      const isCredit = Math.random() < 0.25; // 25% credit
+      const isCredit = Math.random() < 0.25; 
 
-      if (isCredit){
+    if (balance < 500) {
 
-        const creditArrey = ["100","10000","2200","3000","200","400","5000","300","150","1200","2000","7000","8000","1500","350","450","333","800","900","6500","4500","5500"];
+  const creditArrey = [
+    100, 10000, 2200, 3000, 200, 400, 5000, 300,
+    150, 1200, 2000, 7000, 8000, 1500, 350, 450
+  ];
+//  const credit  = random(200,10000)
+  const credit = creditArrey[random(0, creditArrey.length - 1)];
 
-const creditList = () => creditArrey[random(0, creditArrey.length - 1)];
+  balance += credit;
 
-console.log(creditList,"============== creditList =========================")
-        const credit = random(200,10000);
+  data.push({
+    txnDate: currentDate.format("D MMM YYYY"),
+    valueDate: currentDate.format("D MMM YYYY"),
+    description: generateCredit(),
+    refNo: "TRANSFER FROM " + changeMiddle(randomNumber(13)),
+    debit: "",
+    credit: formatMoney(credit),
+    balance: formatMoney(balance)
+  });
 
-        balance += creditList;
+}else {
 
-        data.push({
-          txnDate: currentDate.format("D MMM YYYY"),
-          valueDate: currentDate.format("D MMM YYYY"),
-          description: generateCredit(),
-          refNo: "TRANSFER FROM " + changeMiddle(randomNumber(13)),
-          debit: "",
-          credit: formatMoney(creditList),
-          balance: formatMoney(balance)
-        });
+  if (balance <= 100) return; 
 
-      } else {
+  const debit = random(50, Math.min(balance, 2000));
 
-        const debit = random(50,2000);
+  balance -= debit;
 
-        balance -= debit;
+  data.push({
+    txnDate: currentDate.format("D MMM YYYY"),
+    valueDate: currentDate.format("D MMM YYYY"),
+    description: generateUPI(),
+    refNo: "TRANSFER TO " + changeMiddle(randomNumber(13)),
+    debit: formatMoney(debit),
+    credit: "",
+    balance: formatMoney(balance)
+  });
 
-        data.push({
-          txnDate: currentDate.format("D MMM YYYY"),
-          valueDate: currentDate.format("D MMM YYYY"),
-          description: generateUPI(),
-          refNo: "TRANSFER TO " + changeMiddle(randomNumber(13)),
-          debit: formatMoney(debit),
-          credit: "",
-          balance: formatMoney(balance)
-        });
-
-      }
-
+}
     }
 
-    currentDate = currentDate.add(1,"day");
+    currentDate = currentDate.add(1, "day");
   }
 
   return data;
 }
-
 
 
 

@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import Navbar from "./NavBar";
+import Footer from "./footer";
 import "./home.css";
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -115,6 +116,8 @@ function HomePage() {
         </form>
 
       </section>
+
+         <Footer />
     </div>
   )
 }

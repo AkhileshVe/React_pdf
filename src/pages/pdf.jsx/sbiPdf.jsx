@@ -18,6 +18,7 @@ Font.register({
     ]
 });
 import { generateSelfEmployeeBankData } from "./sbiSelfEmpData"
+import { generateMixedStatement } from "./salariedEmpData"
 
 import { useEffect, useState } from "react";
 import { generateEveryBankData } from "./sbiNew_data";
@@ -30,15 +31,6 @@ const sixMonthsAgo = dayjs().subtract(6, "month");
 
 const formattedToday = today.format("DD MMM YYYY");
 const formattedSixMonthsAgo = sixMonthsAgo.format("DD MMM YYYY");
-
-// const filteredTransactions = sbiDataDynamic.map(txn => {
-//     return (dayjs().subtract(txn.txnDate, "days").format("DD MMM YYYY"))
-// }
-// );
-
-const sixMonths = dayjs().subtract(6, "days");
-// const formattedSixMonths = sixMonths.format("DD MMM YYYY");
-
 const formatMoney = (num) => {
     if (num === null || num === undefined) return "";
     return Number(num).toLocaleString("en-IN", {
@@ -58,39 +50,6 @@ const changeSpecific = (str) => {
         }
         return num;
     });
-};
-
-const randomNames = [
-    "MEENA",
-    "GEETA",
-    "MONU",
-    "NEHA",
-    "KOMAL",
-    "RAVI",
-    "AMIT",
-    "RAHUL",
-    "SONU",
-    "VIKAS",
-];
-
-
-const changeDescription = (str, companyName) => {
-
-    let updated = str.replace(/\d{12}/g, (num) => {
-        const random4 = generateRandom4();
-        return num.slice(0, 4) + random4 + num.slice(-4);
-    });
-
-    updated = updated.replace(
-        /(MEENA|GEETAT|SAVITA|NEHAD|KOMAL S|RAVI|AMIT)/,
-        randomNames[Math.floor(Math.random() * randomNames.length)]
-    );
-
-    if (companyName) {
-        updated = updated.replace(/AIR INDIA LIMITED/, companyName);
-    }
-
-    return updated;
 };
 
 const styles = StyleSheet.create({
@@ -211,11 +170,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderLeftWidth: 0,
         borderTopWidth: 0,
-        // padding: 4
     },
-
-
-
     textst: {
         marginBottom: "6px"
     },
@@ -232,7 +187,7 @@ const styles = StyleSheet.create({
 });
 
 const MyDocument = ({
-    companyName,modeBalance,interestRate, bankEveryData, accountName, address, date, accountNumber, accountDescription, branch, drawingPower, cifNo, ckycrNumber, ifsCode, micrCode, nominationRegistered, balance,
+    modeBalance, interestRate, bankEveryData, accountName, address, date, accountNumber, accountDescription, branch, drawingPower, cifNo, ckycrNumber, ifsCode, micrCode, nominationRegistered, balance,
 }) => (
 
     <Document>
@@ -270,42 +225,30 @@ const MyDocument = ({
                     <Text style={styles.textst}>Drawing Power</Text>
                     <Text style={{ marginLeft: 55 }}>: {drawingPower || "0.00"}</Text>
                 </View>
-
-
-
-
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>Interest Rate(% p.a.)</Text>
                     <Text style={{ marginLeft: 30 }}>: {interestRate || "2.5"}</Text>
                 </View>
-
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>MOD Balance</Text>
                     <Text style={{ marginLeft: 60 }}>: {modeBalance || "0.00"}</Text>
                 </View>
-
-
-
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>CIF No</Text>
                     <Text style={{ marginLeft: 89 }}>: {cifNo || "67262931429"}</Text>
                 </View>
-
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>CKYCR Number</Text>
                     <Text style={{ marginLeft: 47 }}>: {ckycrNumber || "XXXXXXXXXXX1234"}</Text>
                 </View>
-
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>IFS Code</Text>
                     <Text style={{ marginLeft: 77 }}>: {ifsCode || "SBIN0001499"}</Text>
                 </View>
-
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>(Indian Financial System)</Text>
                     <Text style={{ marginLeft: 12 }}></Text>
                 </View>
-
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>MICR Code</Text>
                     <Text style={{ marginLeft: 65 }}>: {micrCode || "462002502"}</Text>
@@ -339,19 +282,18 @@ const MyDocument = ({
             <View style={styles.table}>
 
                 {/* Table Header */}
-                <View style={styles.tableRow} fixed={true} wrap={false}>
-                    <Text style={styles.tableColHeaderDate}>Txn Date</Text>
-                    <Text style={styles.tableColHeaderDate}>Value Date </Text>
-                    <Text style={styles.tableColHeaderDis}>Description</Text>
-                    <Text style={styles.tableColHeaderRef}>Ref No./Cheque No.</Text>
-                    <Text style={styles.tableColHeader}>Debit</Text>
-                    <Text style={styles.tableColHeader}>Credit</Text>
-                    <Text style={styles.tableColHeader}>Balance</Text>
-                </View>
+                {bankEveryData.length > 0 &&
+                    (<View style={styles.tableRow} fixed={true} >
+                        <Text style={styles.tableColHeaderDate}>Txn Date</Text>
+                        <Text style={styles.tableColHeaderDate}>Value Date </Text>
+                        <Text style={styles.tableColHeaderDis}>Description</Text>
+                        <Text style={styles.tableColHeaderRef}>Ref No./Cheque No.</Text>
+                        <Text style={styles.tableColHeader}>Debit</Text>
+                        <Text style={styles.tableColHeader}>Credit</Text>
+                        <Text style={styles.tableColHeader}>Balance</Text>
+                    </View>)}
                 {/* Row 1 */}
                 {bankEveryData.map((item, index) => {
-
-
                     return (
                         <View style={styles.tableRow} key={index} wrap={false}>
                             {/* <Text style={styles.tableColDate}>{
@@ -405,31 +347,46 @@ function SbiPDF() {
     useEffect(() => {
         if (!formData) return;
 
-        //         const generated = generateSelfEmployeeBankData({
-        //   openingBalance: formData.balance
-        // });
+            const generateMixed = generateMixedStatement({
+                openingBalance: parseInt(formData.balance),
+                salaryAmount: parseInt(formData.salaryAmount),
+                company: "RBISOGOMPEP"
+            });
+            setBankEveryData(generateMixed)
+        // console.log(formData.pdf_type, "fdghddnj ============== formData.pdf_type =============")
+        // // ==========================.  Self_Employee ==============
+        // if (formData.pdf_type == "Self_Employee") {
+        //     const generated = generateSelfEmployeeBankData({
+        //         openingBalance: formData.balance
+        //     });
         //     setBankEveryData(generated)
+        // }
 
+        // // ==========================.  Salary ==============
+        // if (formData.pdf_type == "Salary") {
+        //     const generateEvery = generateEveryBankData({
+        //         openingBalance: parseInt(formData.balance),
+        //         salaryAmount: parseInt(formData.salaryAmount),
+        //         company: formData.salaryCompany
+        //     })
+        //     setBankEveryData(generateEvery)
+        // }
 
-  
+        // // ==========================.  Salaried_banking ==============
+        // if (formData.PDf_type == "Salaried_banking") {
+        //     const generateMixed = generateMixedStatement({
+        //         openingBalance: parseInt(formData.balance),
+        //         salaryAmount: parseInt(formData.salaryAmount),
+        //         company: "RBISOGOMPEP"
+            // });
+        //     setBankEveryData(generateMixed)
+        // }
 
-        const generateEvery = generateEveryBankData({
-            openingBalance: parseInt(formData.balance),
-            salaryAmount: parseInt(formData.salaryAmount),
-            company: formData.salaryCompany
-        })
-        setBankEveryData(generateEvery)
     }, [formData])
 
     if (!formData) {
         return <p>No data received</p>;
     }
-
-     const formattedDate = new Date(formData.date ).toLocaleDateString("en-GB", {
-            day: "numeric",
-            month: "long",
-            year: "numeric"
-        });
 
     return (
         <div>

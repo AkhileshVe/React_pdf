@@ -22,7 +22,8 @@ export default function BankDetailsForm() {
     salaryCompany: "",
     salaryAmount: 0,
     modeBalance: 0,
-    interestRate: 0
+    interestRate: 0,
+    pdf_type: ""
   });
 
   const [errors, setErrors] = useState({});
@@ -61,6 +62,9 @@ export default function BankDetailsForm() {
 
     if (!form.drawingPower)
       newErrors.drawingPower = "Drawing Power required";
+    
+    if (!form.pdf_type)
+      newErrors.pdf_type = "PDF type required";
 
     if (!form.modeBalance)
       newErrors.modeBalance = "Mode Balance required";
@@ -85,6 +89,8 @@ export default function BankDetailsForm() {
 
     if (!form.balance)
       newErrors.balance = "Balance required";
+
+    
 
     return newErrors;
   };
@@ -113,6 +119,17 @@ export default function BankDetailsForm() {
           <h2>Bank Details Form</h2>
 
           <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label>PDF TYPE         :</label>
+              <select name="pdf_type" onChange={handleChange} className={errors.pdf_type ? "error-input" : ""}>
+                <option value="">Select</option>
+                <option value="Salary">credit Salary</option>
+                <option value="Self_Employee">Self Employee</option>
+                <option value="Salaried_banking">Salaried banking</option>
+              </select>
+               {errors.pdf_type && <span className="error">{errors.pdf_type}</span>}
+            </div>
+
 
             <div className="form-group">
               <label>Account Name      :</label>
