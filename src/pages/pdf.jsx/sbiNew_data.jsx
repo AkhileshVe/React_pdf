@@ -52,6 +52,233 @@ export const generateBankData = ({
   return rows;
 };
 
+/* -------------------- CHANGE MIDDLE DIGIT NUMBER -------------------- */
+
+function changeMiddleDigits(num){
+
+ const str = num.toString();
+
+ if(str.length <= 8) return str;
+
+ const start = str.slice(0,4);
+ const end = str.slice(-4);
+
+ const random = Math.floor(1000 + Math.random()*9000);
+
+ return start + random + end;
+}
+
+/* -------------------- RANDOM HELPERS -------------------- */
+
+
+/* ---------- DATA ---------- */
+
+
+/* ---------- helpers ---------- */
+
+// const random = (min, max) =>
+//   Math.floor(Math.random() * (max - min + 1)) + min;
+
+// const formatMoney = (num) => {
+//   return Number(num).toLocaleString("en-IN", {
+//     minimumFractionDigits: 2,
+//     maximumFractionDigits: 2,
+//   });
+// };
+
+// const randomNumber = (len) =>
+//   Math.floor(Math.random() * 10 ** len)
+//     .toString()
+//     .padStart(len, "0");
+
+// function changeMiddle(num) {
+//   const s = num.toString();
+//   const start = s.slice(0, 4);
+//   const end = s.slice(-4);
+//   const mid = random(1000, 9999);
+//   return start + mid + end;
+// }
+
+/* ---------- names ---------- */
+
+
+const random = (min, max) =>
+  Math.floor(Math.random() * (max - min + 1)) + min;
+
+const formatMoney = (num) =>
+  Number(num).toLocaleString("en-IN", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+
+const randomNumber = (len) =>
+  Math.floor(Math.random() * 10 ** len)
+    .toString()
+    .padStart(len, "0");
+
+function changeMiddle(num) {
+  const s = num.toString();
+  const start = s.slice(0, 4);
+  const end = s.slice(-4);
+  const mid = random(1000, 9999);
+  return start + mid + end;
+}
+
+function changeMiddleIfc(num) {
+ const s = num.toString();
+  const start = s.slice(0, 8);
+  const mid = random(100, 999);
+  return start + mid
+}
+
+function changeMiddlesalary(num) {
+  const s = num.toString();
+  const start = s.slice(0, 4);
+  const end = s.slice(-5);
+  const mid = random(1000, 9999);
+  return start + mid + end;
+}
+
+
+const names = [
+  "MEENA","GEETA","SAVITA","NEHA","KOMAL",
+  "RAVI","AMIT","VIJAY","PANKAJ","ASHOK",
+  "SANJAY","RAHUL","IMRAN","YOGESH"
+];
+
+const banks = ["SBIN","HDFC","ICIC","KKBK","CNRB","YESB"];
+
+const randomName = () => names[random(0, names.length - 1)];
+const randomBank = () => banks[random(0, banks.length - 1)];
+
+function generateUPI() {
+  const upi = changeMiddle(randomNumber(12));
+  const phone = changeMiddle(randomNumber(10));
+
+  return `TO TRANSFER- UPI/DR/${upi}/${randomName()} /${randomBank()}/${phone}/Payme-`;
+}
+
+function salaryDescription(company) {
+  const ifsCode = changeMiddleIfc("SBIN0000743");
+  const cifCode = changeMiddlesalary("SBIN0000743");
+  return `BY TRANSFER- NEFT*${ifsCode}*SBI ${cifCode}*${company}*Salary-`;
+}
+
+export function generateEveryBankData({
+  openingBalance = 50000,
+  salaryAmount = 65000,
+  company = "AIR INDIA LIMITED"
+}) {
+
+  let balance = openingBalance;
+
+  const today = dayjs();
+  const startDate = today.subtract(6, "month");
+
+  const data = [];
+  const salaryMonths = new Set();
+
+  let currentDate = startDate;
+  let interestGap = 0;
+
+  let currentMonth = "";
+  let repeatDays = [];
+
+  while (currentDate.isBefore(today) || currentDate.isSame(today)) {
+
+    const monthKey = currentDate.format("YYYY-MM");
+
+    /* generate repeat days for month */
+
+    if (monthKey !== currentMonth) {
+      currentMonth = monthKey;
+
+      const daysInMonth = currentDate.daysInMonth();
+      const repeatCount = random(3,5);
+
+      repeatDays = [];
+
+      for (let i=0;i<repeatCount;i++){
+        repeatDays.push(random(1,daysInMonth));
+      }
+    }
+
+    /* salary */
+
+    if (
+      currentDate.date() >= 3 &&
+      currentDate.date() <= 5 &&
+      !salaryMonths.has(monthKey)
+    ) {
+
+      salaryMonths.add(monthKey);
+
+      balance += salaryAmount;
+
+      data.push({
+        txnDate: currentDate.format("D MMM YYYY"),
+        valueDate: currentDate.format("D MMM YYYY"),
+        description: salaryDescription(company),
+        refNo: "TRANSFER FROM " + changeMiddle("4894466327581"),
+        debit: "",
+        credit: formatMoney(salaryAmount),
+        balance: formatMoney(balance)
+      });
+    }
+
+    /* interest */
+
+    if (interestGap >= 30) {
+
+      const interest = random(180,220);
+
+      balance += interest;
+
+      data.push({
+        txnDate: currentDate.format("D MMM YYYY"),
+        valueDate: currentDate.format("D MMM YYYY"),
+        description: "CREDIT INTEREST--",
+        refNo: "",
+        debit: "",
+        credit: formatMoney(interest),
+        balance: formatMoney(balance)
+      });
+
+      interestGap = 0;
+    }
+
+    /* debit transactions */
+
+    const isRepeat = repeatDays.includes(currentDate.date());
+    const txnCount = isRepeat ? 2 : 1;
+
+    for (let i=0;i<txnCount;i++){
+
+      const debit = random(200,2000);
+
+      balance -= debit;
+
+      data.push({
+        txnDate: currentDate.format("D MMM YYYY"),
+        valueDate: currentDate.format("D MMM YYYY"),
+        description: generateUPI(),
+        refNo: "TRANSFER TO " + changeMiddle("4894466327581"),
+        debit: formatMoney(debit),
+        credit: "",
+        balance: formatMoney(balance)
+      });
+
+    }
+
+    interestGap++;
+
+    currentDate = currentDate.add(1,"day");
+  }
+
+  return data;
+}
+
+
 export const sbiDataDynamic = [
 { txnDate:182, valueDate:182, description  :"TO TRANSFER- UPI/DR/405766387708/MEENA S/AIRP/7764208537/Payme-", refNo: "TRANSFER TO 4698818875927" },
 { txnDate:181, valueDate:181, description  :"TO TRANSFER- UPI/DR/608174669424/GEETAT /IDIB/8646475352/Payme-", refNo : "TRANSFER TO 4891326431869" },
@@ -294,484 +521,6 @@ export const sbiDataDynamic = [
 
 
 
-
-// refNo : "TRANSFER TO 4698818875927"
-// refNo : "TRANSFER TO 4891326431869"
-// refNo : "TRANSFER TO 4896655703197"
-// refNo : "TRANSFER TO 4894815662381"
-// refNo : "TRANSFER TO 4693871985757"
-// refNo : "TRANSFER TO 4898101951531"
-// refNo : "TRANSFER TO 4893682919945"
-// refNo : "TRANSFER TO 4691283793404"
-// refNo : "TRANSFER TO 4698153565564"
-// refNo : "TRANSFER TO 4699199326896"
-// refNo : "TRANSFER TO 4695408284083"
-// refNo : "TRANSFER TO 4893389459247"
-// refNo:"TRANSFER FROM 4696115258012"
-// refNo : "TRANSFER TO 4895470669076"
-// refNo : "TRANSFER TO 4893613016775"
-// refNo : "TRANSFER TO 4898900329179"
-// refNo : "TRANSFER TO 4696574661660"
-// refNo : "TRANSFER TO 4692226071571"
-// refNo : "TRANSFER TO 4893932761655"
-// refNo : "TRANSFER TO 4692350121047"
-// refNo : "TRANSFER TO 4699755845390"
-// refNo : "TRANSFER TO 4895210617365"
-// refNo : "TRANSFER TO 4694636633671"
-// refNo : "TRANSFER TO 4896165084747"
-// refNo : "TRANSFER TO 4698516982301"
-// refNo : "TRANSFER TO 4698083078012"
-// refNo : "TRANSFER TO 4692031408826"
-// refNo : "TRANSFER TO 4699096564025"
-// refNo : "TRANSFER TO 4892578515072"
-// refNo : "TRANSFER TO 4898535758938"
-// refNo : "TRANSFER TO 4697073509953"
-// refNo:"TRANSFER FROM 4898622745914"
-// refNo : "TRANSFER TO 4896633122563"
-// refNo : "TRANSFER TO 4897929739006"
-// refNo : "TRANSFER TO 4697770822711"
-// refNo : "TRANSFER TO 4896642626556"
-// refNo : "TRANSFER TO 4892552542739"
-// refNo : "TRANSFER TO 4896713795926"
-// refNo : "TRANSFER TO 4693581154198"
-// refNo : "TRANSFER TO 4896894952763"
-// refNo : "TRANSFER TO 4697050959410"
-// refNo : "TRANSFER TO 4895459608082"
-// refNo : "TRANSFER TO 4895109093931"
-// refNo : "TRANSFER TO 4691912510587"
-// refNo : "TRANSFER TO 4692222878225"
-// refNo : "TRANSFER TO 4898717369873"
-// refNo : "TRANSFER TO 4699145263989"
-// refNo : "TRANSFER TO 4894466327581"
-// refNo : "TRANSFER TO 4893552606408"
-// refNo : "TRANSFER TO 4695469379227"
-// refNo : "TRANSFER TO 4898719763401"
-// refNo : "TRANSFER TO 4898581359391"
-// refNo : "TRANSFER TO 4692711391711"
-// refNo : "TRANSFER TO 4698681868540"
-// refNo : "TRANSFER TO 4899887906533"
-// refNo : "TRANSFER TO 4693402317153"
-// refNo : "TRANSFER TO 4892979942306"
-// refNo : "TRANSFER TO 4696530426107"
-// refNo : "TRANSFER TO 4895804867764"
-// refNo : "TRANSFER TO 4696157564009"
-// refNo : "TRANSFER TO 4696480840821"
-// refNo : "TRANSFER TO 4892697592009"
-// refNo : "TRANSFER TO 4699742954924"
-// refNo : "TRANSFER TO 4891710145137"
-// refNo : "TRANSFER TO 4891472899421"
-// refNo : "TRANSFER TO 4691552280528"
-// refNo : "TRANSFER TO 4696686941917"
-// refNo : "TRANSFER TO 4892185103158"
-// refNo : "TRANSFER TO 4893379555165"
-// refNo : "TRANSFER TO 4696402844505"
-// refNo : "TRANSFER TO 4896251965793"
-// refNo : "TRANSFER TO 4697760202178"
-// refNo : "TRANSFER TO 4692324502012"
-// refNo : "TRANSFER TO 4694434032682"
-// refNo : "TRANSFER TO 4898923866947"
-// refNo : "TRANSFER TO 4893748181380"
-// refNo : "TRANSFER TO 4898080567565"
-// refNo : "TRANSFER TO 4699775591234"
-// refNo : "TRANSFER TO 4693737558915"
-// refNo : "TRANSFER TO 4694721617763"
-// refNo:"TRANSFER FROM 4694294614542"
-// refNo : "TRANSFER TO 4894079017751"
-// refNo : "TRANSFER TO 4896876116133"
-// refNo : "TRANSFER TO 4696901278933"
-// refNo : "TRANSFER TO 4897380750445"
-// refNo : "TRANSFER TO 4697450554155"
-// refNo : "TRANSFER TO 4897647760174"
-// refNo : "TRANSFER TO 4896526836963"
-// refNo : "TRANSFER TO 4697603406051"
-// refNo : "TRANSFER TO 4897122925534"
-// refNo : "TRANSFER TO 4698922953529"
-// refNo : "TRANSFER TO 4691494963062"
-// refNo : "TRANSFER TO 4699409650627"
-// refNo : "TRANSFER TO 4696463902495"
-// refNo : "TRANSFER TO 4892109567303"
-// refNo : "TRANSFER TO 4696192193988"
-// refNo : "TRANSFER TO 4697501534571"
-// refNo : "TRANSFER TO 4899430439670"
-// refNo : "TRANSFER TO 4694555054171"
-// refNo : "TRANSFER TO 4693717679064"
-// refNo : "TRANSFER TO 4897946546843"
-// refNo : "TRANSFER TO 4892976775292"
-// refNo : "TRANSFER TO 4698394221090"
-// refNo : "TRANSFER TO 4893328015663"
-// refNo : "TRANSFER TO 4696092590261"
-// refNo : "TRANSFER TO 4698628643388"
-// refNo : "TRANSFER TO 4893286092917"
-// refNo : "TRANSFER TO 4898028663409"
-// refNo : "TRANSFER TO 4695063478265"
-// refNo : "TRANSFER TO 4896857718442"
-// refNo : "TRANSFER TO 4697295705719"
-// refNo : "TRANSFER TO 4896797611366"
-// refNo : "TRANSFER TO 4692564196778"
-// refNo : "TRANSFER TO 4692094115793"
-// refNo : "TRANSFER TO 4694912608659"
-// refNo : "TRANSFER TO 4699154920742"
-// refNo : "TRANSFER TO 4694093644705"
-// refNo : "TRANSFER TO 4896091597588"
-// refNo : "TRANSFER TO 4695982414423"
-// refNo : "TRANSFER TO 4699413104964"
-// refNo : "TRANSFER TO 4891680146712"
-// refNo : "TRANSFER TO 4699717497584"
-// refNo : "TRANSFER TO 4698280133136"
-// refNo : "TRANSFER TO 4694351020471"
-// refNo : "TRANSFER TO 4694280276408"
-// refNo : "TRANSFER TO 4697791857755"
-// refNo : "TRANSFER TO 4891166231643"
-// refNo : "TRANSFER TO 4698711575283"
-// refNo : "TRANSFER TO 4893837763163"
-// refNo : "TRANSFER TO 4894900043197"
-// refNo : "TRANSFER TO 4691148934349"
-// refNo : "TRANSFER TO 4895868006398"
-// refNo : "TRANSFER TO 4697143470635"
-// refNo:"TRANSFER FROM 4695323019546"
-// refNo : "TRANSFER TO 4892501516374"
-// refNo : "TRANSFER TO 4695174916573"
-// refNo : "TRANSFER TO 4896828307609"
-// refNo : "TRANSFER TO 4893097582330"
-// refNo : "TRANSFER TO 4691068665577"
-// refNo : "TRANSFER TO 4694073922288"
-// refNo : "TRANSFER TO 4696964250822"
-// refNo : "TRANSFER TO 4892730399889"
-// refNo : "TRANSFER TO 4696890334929"
-// refNo : "TRANSFER TO 4698446539295"
-// refNo : "TRANSFER TO 4698572278542"
-// refNo : "TRANSFER TO 4899914972033"
-// refNo : "TRANSFER TO 4697879075016"
-// refNo : "TRANSFER TO 4897635407135"
-// refNo : "TRANSFER TO 4696117963485"
-// refNo : "TRANSFER TO 4899068625537"
-// refNo : "TRANSFER TO 4697856000454"
-// refNo : "TRANSFER TO 4699255987740"
-// refNo : "TRANSFER TO 4696756317790"
-// refNo : "TRANSFER TO 4891851534039"
-// refNo : "TRANSFER TO 4695348698077"
-// refNo : "TRANSFER TO 4895694167323"
-// refNo : "TRANSFER TO 4695292781047"
-// refNo : "TRANSFER TO 4695081162144"
-// refNo : "TRANSFER TO 4898592489754"
-// refNo : "TRANSFER TO 4891546637068"
-// refNo : "TRANSFER TO 4891024125791"
-// refNo : "TRANSFER TO 4696200163188"
-// refNo : "TRANSFER TO 4696682119511"
-// refNo : "TRANSFER TO 4692101717006"
-// refNo : "TRANSFER TO 4893673732474"
-// refNo : "TRANSFER TO 4893789683049"
-// refNo : "TRANSFER TO 4692550489651"
-// refNo : "TRANSFER TO 4897037608111"
-// refNo : "TRANSFER TO 4692893833037"
-// refNo : "TRANSFER TO 4892795001949"
-// refNo : "TRANSFER TO 4694350535562"
-// refNo : "TRANSFER TO 4696918788972"
-// refNo : "TRANSFER TO 4898563609127"
-// refNo : "TRANSFER TO 4695157375076"
-// refNo : "TRANSFER TO 4697401556542"
-// refNo : "TRANSFER TO 4697930248081"
-// refNo : "TRANSFER TO 4899085452103"
-// refNo:"TRANSFER FROM 4691149377157"
-// refNo : "TRANSFER TO 4699113702314"
-// refNo : "TRANSFER TO 4693185836001"
-// refNo : "TRANSFER TO 4695279628378"
-// refNo : "TRANSFER TO 4699443615142"
-// refNo : "TRANSFER TO 4896169022502"
-// refNo : "TRANSFER TO 4893338675361"
-// refNo : "TRANSFER TO 4897756727908"
-// refNo : "TRANSFER TO 4693513539941"
-// refNo : "TRANSFER TO 4696710967662"
-// refNo : "TRANSFER TO 4898513877150"
-// refNo : "TRANSFER TO 4699963405838"
-// refNo : "TRANSFER TO 4895478968832"
-// refNo : "TRANSFER TO 4892500871646"
-// refNo : "TRANSFER TO 4892603384866"
-// refNo : "TRANSFER TO 4897943089186"
-// refNo : "TRANSFER TO 4695269568808"
-// refNo : "TRANSFER TO 4691334821777"
-// refNo : "TRANSFER TO 4697153519317"
-// refNo : "TRANSFER TO 4896109059427"
-// refNo : "TRANSFER TO 4898038307166"
-// refNo : "TRANSFER TO 4699346762578"
-// refNo : "TRANSFER TO 4896896702716"
-// refNo : "TRANSFER TO 4894280440559"
-// refNo : "TRANSFER TO 4898253991648"
-// refNo : "TRANSFER TO 4891560053339"
-// refNo : "TRANSFER TO 4698485592774"
-// refNo : "TRANSFER TO 4691811129418"
-// refNo : "TRANSFER TO 4699264165611"
-// refNo : "TRANSFER TO 4892053621163"
-// refNo : "TRANSFER TO 4897089465945"
-// refNo : "TRANSFER TO 4897418760079"
-// refNo : "TRANSFER TO 4691640841131"
-// refNo : "TRANSFER TO 4892830484880"
-// refNo : "TRANSFER TO 4891479338332"
-// refNo : "TRANSFER TO 4693444414901"
-// refNo : "TRANSFER TO 4899785171373"
-// refNo : "TRANSFER TO 4892277399789"
-// refNo : "TRANSFER TO 4897774112252"
-// refNo : "TRANSFER TO 4691912383106"
-// refNo : "TRANSFER TO 4896826299674"
-// refNo : "TRANSFER TO 4896852742316"
-// refNo : "TRANSFER TO 4691805747642"
-// refNo : "TRANSFER TO 4695621152393"
-// refNo : "TRANSFER TO 4695693372555"
-// refNo : "TRANSFER TO 4693257941142"
-// refNo : "TRANSFER TO 4896025435103"
-// refNo : "TRANSFER TO 4897844230828"
-// refNo:"TRANSFER FROM 4896232070268"
-// refNo : "TRANSFER TO 4699944553890"
-// refNo : "TRANSFER TO 4892606476380"
-// refNo : "TRANSFER TO 4691646610835"
-// refNo : "TRANSFER TO 4696280240835"
-// refNo : "TRANSFER TO 4691862765249"
-// refNo : "TRANSFER TO 4898820338653"
-// refNo : "TRANSFER TO 4895957303280"
-// refNo : "TRANSFER TO 4899155351752"
-// refNo : "TRANSFER TO 4699687119890"
-// refNo : "TRANSFER TO 4698397695682"
-
-
-
-
-// 2
-// 3
-// 4
-// 5
-// 6
-// 7
-// 8
-// 9
-// 10
-// 11
-// 13
-// 15
-// 16
-// 17
-// 18
-// 19
-// 19
-// 20
-// 21
-// 22
-// 24
-// 25
-// 26
-// 27
-// 28
-// 29
-// 29
-// 30
-// 31
-// 32
-// 33
-// 35
-// 36
-// 36
-// 37
-// 38
-// 39
-// 40
-// 41
-// 42
-// 43
-// 43
-// 44
-// 45
-// 45
-// 46
-// 47
-// 48
-// 49
-// 50
-// 51
-// 52
-// 52
-// 53
-// 54
-// 55
-// 56
-// 57
-// 58
-// 59
-// 60
-// 62
-// 62
-// 63
-// 64
-// 65
-// 66
-// 67
-// 68
-// 70
-// 71
-// 72
-// 72
-// 73
-// 74
-// 75
-// 76
-// 76
-// 77
-// 78
-// 79
-// 79
-// 80
-// 81
-// 82
-// 83
-// 84
-// 85
-// 86
-// 87
-// 88
-// 89
-// 90
-// 91
-// 92
-// 93
-// 94
-// 95
-// 96
-// 97
-// 98
-// 99
-// 100
-// 101
-// 102
-// 103
-// 104
-// 105
-// 106
-// 107
-// 108
-// 108
-// 109
-// 109
-// 110
-// 111
-// 122
-// 113
-// 114
-// 115
-// 116
-// 117
-// 118
-// 118
-// 119
-// 119
-// 120
-// 120
-// 121
-// 122
-// 123
-// 124
-// 125
-// 126
-// 127
-// 128
-// 128
-// 129
-// 129
-// 130
-// 131
-// 132
-// 133
-// 134
-// 135
-// 136
-// 137
-// 138
-// 138
-// 139
-// 139
-// 140
-// 141
-// 142
-// 143
-// 144
-// 145
-// 146
-// 147
-// 148
-// 148
-// 149
-// 149
-// 150
-// 151
-// 152
-// 153
-// 154
-// 155
-// 156
-// 157
-// 158
-// 158
-// 159
-// 159
-// 160
-// 161
-// 162
-// 163
-// 164
-// 165
-// 166
-// 167
-// 168
-// 168
-// 169
-// 169
-// 170 
-// 171
-// 172
-// 173
-// 174
-// 175
-// 176
-// 177
-// 178
-// 178
-// 179
-// 179
-// 180
-// 181
-// 182
-// 183
-// 184
-// 185
-// 186
-// 187
-// 188
-// 188
-// 189
-// 189
-// 190
-// 191
-// 192
-// 193
-// 194
-// 195
-// 196
-// 197
-// 198
-// 198
-// 199
-// 199
-// 200
-// 201
-// 202
-// 203
-// 204
-// 205
-// 206
-// 207
-// 208
-// 208
-// 209
-// 209
-// 210
-
 export const sbiDataDynamicddd = [
 { txnDate:2, valueDate: 2, description  :"TO TRANSFER- UPI/DR/405766387708/MEENA S/AIRP/7764208537/Payme-", refNo: "TRANSFER TO 4698818875927" },
 { txnDate:3, valueDate: 3, description  :"TO TRANSFER- UPI/DR/608174669424/GEETAT/IDIB/8646475352/Payme-", refNo : "TRANSFER TO 4891326431869" },
@@ -1011,3 +760,181 @@ export const sbiDataDynamicddd = [
 { txnDate:210, valueDate: 210, description  :"TO TRANSFER- UPI/DR/951980594268/SURAJ /AIRP/9535367568/Payme-", refNo : "TRANSFER TO 4698397695682" },
 ]
 
+
+
+
+// const names=[
+// "MEENA","GEETA","SAVITA","NEHA","KOMAL",
+// "RAVI","AMIT","VIJAY","PANKAJ","ASHOK",
+// "SANJAY","MAHESH","PRAVEEN","SURENDRA",
+// "YOGESH","SWATI","ANITA","RAMESH","IMRAN","RAHUL"
+// ];
+
+// const banks=["SBIN","HDFC","ICIC","KKBK","CNRB","YESB","UTIB","PUNB","UBIN","BKID"];
+
+// const random=(min,max)=>Math.floor(Math.random()*(max-min+1))+min;
+
+// const randomName=()=>names[random(0,names.length-1)];
+// const randomBank=()=>banks[random(0,banks.length-1)];
+
+// const randomNumber=(len)=>
+// Math.floor(Math.random()*10**len).toString().padStart(len,"0");
+
+// /* ---------- CHANGE MIDDLE DIGITS ---------- */
+
+// function changeMiddle(num){
+
+//  const s=num.toString();
+
+//  if(s.length<=8) return s;
+
+//  const start=s.slice(0,4);
+//  const end=s.slice(-4);
+
+//  const mid=random(1000,9999);
+
+//  return start+mid+end;
+// }
+
+// /* ---------- UPI DESCRIPTION ---------- */
+
+// function generateUPI(){
+
+//  const upi=changeMiddle(randomNumber(12));
+//  const phone=changeMiddle(randomNumber(10));
+
+//  return `TO TRANSFER- UPI/DR/${upi}/${randomName()} /${randomBank()}/${phone}/Payme-`;
+// }
+
+// /* ---------- SALARY ---------- */
+
+// function salaryDescription(company){
+
+//  return `BY TRANSFER- NEFT*SBIN0000743*SBI N255536851586*${company}*Salary-`;
+
+// }
+
+// /* ---------- GENERATOR ---------- */
+
+// export function generateEveryBankData({
+
+//  openingBalance=50000,
+//  salaryAmount=65000,
+//  company="AIR INDIA LIMITED"
+
+// }){
+
+//  let balance=openingBalance;
+
+//  const today=dayjs();
+//  const startDate=today.subtract(6,"month");
+
+//  const data=[];
+//  const salaryMonths=new Set();
+
+//  let interestGap=0;
+
+//  let currentDate=startDate;
+
+//  const minRows=195;
+//  const maxRows=210;
+
+//  const targetRows=random(minRows,maxRows);
+
+//  /* ---------- FIRST MONTH SALARY FIX ---------- */
+
+//  balance+=salaryAmount;
+
+//  data.push({
+//   txnDate:startDate.format("DD MMM YYYY"),
+//   valueDate:startDate.format("DD MMM YYYY"),
+//   description:salaryDescription(company),
+//   refNo:"TRANSFER FROM "+changeMiddle(randomNumber(13)),
+//   debit:"",
+//   credit:formatMoney(salaryAmount),
+//   balance:formatMoney(balance)
+//  });
+
+//  salaryMonths.add(startDate.format("YYYY-MM"));
+
+//  /* ---------- LOOP ---------- */
+
+//  while(currentDate.isBefore(today) || currentDate.isSame(today)){
+
+//   const monthKey=currentDate.format("YYYY-MM");
+
+//   /* SALARY 1-5 DATE */
+
+//   if(
+//    currentDate.date()>=1 &&
+//    currentDate.date()<=5 &&
+//    !salaryMonths.has(monthKey)
+//   ){
+
+//    salaryMonths.add(monthKey);
+
+//    balance+=salaryAmount;
+
+//    data.push({
+//     txnDate:currentDate.format("DD MMM YYYY"),
+//     valueDate:currentDate.format("DD MMM YYYY"),
+//     description:salaryDescription(company),
+//     refNo:"TRANSFER FROM "+changeMiddle(randomNumber(13)),
+//     debit:"",
+//     credit:formatMoney(salaryAmount),
+//     balance:formatMoney(balance)
+//    });
+//   }
+
+//   /* INTEREST EVERY 12 DAYS */
+
+//   if(interestGap>=12){
+
+//    const interest=random(80,220);
+
+//    balance+=interest;
+
+//    data.push({
+//     txnDate:currentDate.format("DD MMM YYYY"),
+//     valueDate:currentDate.format("DD MMM YYYY"),
+//     description:"CREDIT INTEREST--",
+//     refNo:"TRANSFER TO "+changeMiddle(randomNumber(13)),
+//     debit:"",
+//     credit:formatMoney(interest),
+//     balance:formatMoney(balance)
+//    });
+
+//    interestGap=0;
+//   }
+
+//   /* DEBIT */
+
+//   const debitCount=random(1,2);
+
+//   for(let i=0;i<debitCount;i++){
+
+//    if(data.length>=targetRows) break;
+
+//    const debit=random(200,2000);
+
+//    balance-=debit;
+
+//    data.push({
+//     txnDate:currentDate.format("DD MMM YYYY"),
+//     valueDate:currentDate.format("DD MMM YYYY"),
+//     description:generateUPI(),
+//     refNo:"TRANSFER TO "+changeMiddle(randomNumber(13)),
+//     debit:formatMoney(debit),
+//     credit:"",
+//     balance:formatMoney(balance)
+//    });
+
+//   }
+
+//   interestGap++;
+
+//   currentDate=currentDate.add(1,"day");
+//  }
+
+//  return data;
+// }

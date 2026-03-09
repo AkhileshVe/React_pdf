@@ -17,6 +17,27 @@ Font.register({
         { src: "../../assets/fonts/Roboto-Bold.ttf", fontWeight: "bold" }
     ]
 });
+import { generateSelfEmployeeBankData } from "./sbiSelfEmpData"
+
+import { useEffect, useState } from "react";
+import { generateEveryBankData } from "./sbiNew_data";
+import dayjs from "dayjs";
+import sbiLogo from "../../assets/sbi-logo.png";
+import { useLocation } from "react-router-dom";
+
+const today = dayjs();
+const sixMonthsAgo = dayjs().subtract(6, "month");
+
+const formattedToday = today.format("DD MMM YYYY");
+const formattedSixMonthsAgo = sixMonthsAgo.format("DD MMM YYYY");
+
+// const filteredTransactions = sbiDataDynamic.map(txn => {
+//     return (dayjs().subtract(txn.txnDate, "days").format("DD MMM YYYY"))
+// }
+// );
+
+const sixMonths = dayjs().subtract(6, "days");
+// const formattedSixMonths = sixMonths.format("DD MMM YYYY");
 
 const formatMoney = (num) => {
     if (num === null || num === undefined) return "";
@@ -25,31 +46,6 @@ const formatMoney = (num) => {
         maximumFractionDigits: 2
     });
 };
-import { useEffect, useState } from "react";
-import { generateBankData, sbiDataDynamic } from "./sbiNew_data";
-import dayjs from "dayjs";
-import sbiLogo from "../../assets/sbi-logo.png";
-import transactions from "./sbiData"
-import { sbidatata } from "./sbiData"
-import { originaldata } from "./sbiData"
-import { useNavigate, useLocation } from "react-router-dom";
-
-const today = dayjs();
-const sixMonthsAgo = dayjs().subtract(6, "month");
-
-const formattedToday = today.format("DD MMM YYYY");
-const formattedSixMonthsAgo = sixMonthsAgo.format("DD MMM YYYY");
-let transactionss = [2, 4, 6, 8, 12, 13, 15, 17, 20, 34]
-
-const filteredTransactions = sbiDataDynamic.map(txn => {
-    return (dayjs().subtract(txn.txnDate, "days").format("DD MMM YYYY"))
-}
-);
-
-// console.log(filteredTransactions, "@@@@@@@@@@@llllllllllll")
-
-const sixMonths = dayjs().subtract(6, "days");
-const formattedSixMonths = sixMonths.format("DD MMM YYYY");
 
 const generateRandom4 = () => {
     return Math.floor(1000 + Math.random() * 9000);
@@ -65,36 +61,36 @@ const changeSpecific = (str) => {
 };
 
 const randomNames = [
-  "MEENA",
-  "GEETA",
-  "MONU",
-  "NEHA",
-  "KOMAL",
-  "RAVI",
-  "AMIT",
-  "RAHUL",
-  "SONU",
-  "VIKAS",
+    "MEENA",
+    "GEETA",
+    "MONU",
+    "NEHA",
+    "KOMAL",
+    "RAVI",
+    "AMIT",
+    "RAHUL",
+    "SONU",
+    "VIKAS",
 ];
 
 
 const changeDescription = (str, companyName) => {
 
-  let updated = str.replace(/\d{12}/g, (num) => {
-    const random4 = generateRandom4();
-    return num.slice(0, 4) + random4 + num.slice(-4);
-  });
+    let updated = str.replace(/\d{12}/g, (num) => {
+        const random4 = generateRandom4();
+        return num.slice(0, 4) + random4 + num.slice(-4);
+    });
 
-  updated = updated.replace(
-    /(MEENA|GEETAT|SAVITA|NEHAD|KOMAL S|RAVI|AMIT)/,
-    randomNames[Math.floor(Math.random() * randomNames.length)]
-  );
+    updated = updated.replace(
+        /(MEENA|GEETAT|SAVITA|NEHAD|KOMAL S|RAVI|AMIT)/,
+        randomNames[Math.floor(Math.random() * randomNames.length)]
+    );
 
-  if(companyName){
-     updated = updated.replace(/AIR INDIA LIMITED/, companyName);
-  }
+    if (companyName) {
+        updated = updated.replace(/AIR INDIA LIMITED/, companyName);
+    }
 
-  return updated;
+    return updated;
 };
 
 const styles = StyleSheet.create({
@@ -236,58 +232,73 @@ const styles = StyleSheet.create({
 });
 
 const MyDocument = ({
-     companyName,finalData, accountName, address, date, accountNumber, accountDescription, branch, drawingPower, cifNo, ckycrNumber, ifsCode, micrCode, nominationRegistered, balance,
+    companyName,modeBalance,interestRate, bankEveryData, accountName, address, date, accountNumber, accountDescription, branch, drawingPower, cifNo, ckycrNumber, ifsCode, micrCode, nominationRegistered, balance,
 }) => (
 
     <Document>
         <Page size="A4" style={styles.page}>
             <Image style={styles.imagelogo} src={sbiLogo} />
-
-
             <View style={styles.section}>
                 <View style={styles.textParent}> <Text style={styles.textst}>Account Name</Text>
-                    <Text style={{ marginLeft: 55 }}>: {accountName ?? "Rajesh singh"}</Text>
+                    <Text style={{ marginLeft: 55 }}>: {accountName || "Rajesh singh"}</Text>
                 </View>
                 <View style={styles.textParent}> <Text style={styles.textst}>Address</Text>
                     <View style={{ width: 140, marginLeft: 83, display: "flex", flexDirection: "row" }}>
                         <Text>: </Text>
-                        <Text style={{ lineHeight: 0.8 }}>{address ?? "S/O: Jayprakash Rajput WARD 01 Mehangipura beraisa - 462038 bhopal"}</Text>
+                        <Text style={{ lineHeight: 0.8 }}>{address || "S/O: Jayprakash Rajput WARD 01 Mehangipura beraisa - 462038 bhopal"}</Text>
                     </View>
                 </View>
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>Date</Text>
-                    <Text style={{ marginLeft: 97 }}>: {date ?? "21 Jan 2026"} </Text>
+
+                    <Text style={{ marginLeft: 97 }}>: {dayjs(date).format("D MMM YYYY") || "21 Jan 2026"} </Text>
                 </View>
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>Account Number</Text>
-                    <Text style={{ marginLeft: 46 }}>: {accountNumber ?? "00000042511739493"}</Text>
+                    <Text style={{ marginLeft: 46 }}>: {accountNumber || "00000042511739493"}</Text>
                 </View>
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>Account Discription</Text>
-                    <Text style={{ marginLeft: 36 }}>: {accountDescription ?? "SBCHQ-SGSP-PUBIND-DIMOND-INR"}</Text>
+                    <Text style={{ marginLeft: 36 }}>: {accountDescription || "SBCHQ-SGSP-PUBIND-DIMOND-INR"}</Text>
                 </View>
 
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>Branch</Text>
-                    <Text style={{ marginLeft: 89 }}>: {branch ?? "BERASIA MAIN ROAD"}</Text>
+                    <Text style={{ marginLeft: 89 }}>: {branch || "BERASIA MAIN ROAD"}</Text>
                 </View>
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>Drawing Power</Text>
-                    <Text style={{ marginLeft: 55 }}>: {drawingPower ?? "0.00"}</Text>
+                    <Text style={{ marginLeft: 55 }}>: {drawingPower || "0.00"}</Text>
                 </View>
+
+
+
+
+                <View style={styles.textParent}>
+                    <Text style={styles.textst}>Interest Rate(% p.a.)</Text>
+                    <Text style={{ marginLeft: 30 }}>: {interestRate || "2.5"}</Text>
+                </View>
+
+                <View style={styles.textParent}>
+                    <Text style={styles.textst}>MOD Balance</Text>
+                    <Text style={{ marginLeft: 60 }}>: {modeBalance || "0.00"}</Text>
+                </View>
+
+
+
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>CIF No</Text>
-                    <Text style={{ marginLeft: 89 }}>: {cifNo ?? "67262931429"}</Text>
+                    <Text style={{ marginLeft: 89 }}>: {cifNo || "67262931429"}</Text>
                 </View>
 
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>CKYCR Number</Text>
-                    <Text style={{ marginLeft: 47 }}>: {ckycrNumber ?? "XXXXXXXXXXX1234"}</Text>
+                    <Text style={{ marginLeft: 47 }}>: {ckycrNumber || "XXXXXXXXXXX1234"}</Text>
                 </View>
 
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>IFS Code</Text>
-                    <Text style={{ marginLeft: 77 }}>: {ifsCode ?? "SBIN0001499"}</Text>
+                    <Text style={{ marginLeft: 77 }}>: {ifsCode || "SBIN0001499"}</Text>
                 </View>
 
                 <View style={styles.textParent}>
@@ -297,7 +308,7 @@ const MyDocument = ({
 
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>MICR Code</Text>
-                    <Text style={{ marginLeft: 65 }}>: {micrCode ?? "462002502"}</Text>
+                    <Text style={{ marginLeft: 65 }}>: {micrCode || "462002502"}</Text>
                 </View>
 
 
@@ -309,12 +320,12 @@ const MyDocument = ({
 
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>Nomination Registered</Text>
-                    <Text style={{ marginLeft: 16 }}>: {nominationRegistered ?? "No"}</Text>
+                    <Text style={{ marginLeft: 16 }}>: {nominationRegistered || "No"}</Text>
                 </View>
 
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>Balance as on {formattedSixMonthsAgo}</Text>
-                    <Text style={{ marginLeft: 8 }}>: {balance}</Text>
+                    <Text style={{ marginLeft: 3 }}>: {formatMoney(balance)}</Text>
                 </View>
                 <View style={styles.textParent}>
                     <Text style={{ fontSize: 12, marginTop: 10, marginBottom: 2 }}>Account Statement from {formattedSixMonthsAgo} to {formattedToday}</Text>
@@ -325,7 +336,6 @@ const MyDocument = ({
 
             <Text style={{ marginBottom: 5 }}>
             </Text>
-            <br />
             <View style={styles.table}>
 
                 {/* Table Header */}
@@ -338,72 +348,88 @@ const MyDocument = ({
                     <Text style={styles.tableColHeader}>Credit</Text>
                     <Text style={styles.tableColHeader}>Balance</Text>
                 </View>
-                <br />
                 {/* Row 1 */}
-                {finalData.map((item, index) => {
+                {bankEveryData.map((item, index) => {
 
 
                     return (
                         <View style={styles.tableRow} key={index} wrap={false}>
-                            <Text style={styles.tableColDate}>{
+                            {/* <Text style={styles.tableColDate}>{
                                 dayjs().subtract(item.txnDate, "days").format("D MMM YYYY")
                             }</Text>
                             <Text style={styles.tableColDate}>{
                                 dayjs().subtract(item.valueDate, "days").format("D MMM YYYY")
-                            }</Text>
-                            <Text style={styles.tableColDis}>{changeDescription(item.description,companyName)}</Text>
+                            }</Text> 
+                             <Text style={styles.tableColDis}>{changeDescription(item.description, companyName)}</Text>
                             <Text style={styles.tableColRef}>{changeSpecific(item.refNo)}</Text>
                             <Text style={styles.tableCol}>{formatMoney(item.debit)}</Text>
                             <Text style={styles.tableCol}> {formatMoney(item.credit)}</Text>
-                            <Text style={styles.tableCol}>{formatMoney(item.balance)}</Text>
+                            <Text style={styles.tableCol}>{formatMoney(item.balance)}</Text> */}
+
+                            <Text style={styles.tableColDate}>{item.txnDate}</Text>
+                            <Text style={styles.tableColDate}>{item.valueDate}</Text>
+                            <Text style={styles.tableColDis}>{item.description}</Text>
+                            <Text style={styles.tableColRef}>{item.refNo}</Text>
+                            <Text style={styles.tableCol}>{item.debit}</Text>
+                            <Text style={styles.tableCol}> {item.credit}</Text>
+                            <Text style={styles.tableCol}>{item.balance}</Text>
                         </View>
                     )
 
                 })}
-                <br />
-
-
+                <Text style={{ marginTop: 4, marginLeft: 14, fontSize: 9, letterSpacing: .2 }}> Please do not share your ATM, Debit/Credit card number, PIN (Personal Identification Number) and OTP (One Time Password)</Text>
+                <Text style={{ fontSize: 9 }}>with anyone over mail, SMS, phone call or any other media. Bank never asks for such information.</Text>
+                <Text style={{ marginTop: 12, marginLeft: 5, fontSize: 9, letterSpacing: .2, lineHeight: 1.5 }}>  **This is a computer generated statement and does not require a signature. </Text>
             </View>
         </Page>
-    </Document>
+    </Document >
 );
 
 function SbiPDF() {
 
-    const [bankData, setBankData] = useState([]);
-    const [finalData, setFinalData] = useState([]);
+    // const [bankData, setBankData] = useState([]);
+    const [bankEveryData, setBankEveryData] = useState([]);
+    const [fileName, setFileName] = useState("1643187072367f6n02eHnEKt3QtUM.pdf");
     const [formData, setFormData] = useState(null);
     const location = useLocation();
 
     useEffect(() => {
-
         if (location.state) {
             setFormData(location.state);
         } else {
             console.log("No navigation data found");
         }
-        const generated = generateBankData({
-            openingBalance: 50000,
-            salaryAmount: 65000,
-            totalRows: 236
-        });
-
-        setBankData(generated);
-
-        const merged = sbiDataDynamic.map((item, index) => ({
-            ...item,
-            debit: generated[index]?.debit ?? null,
-            credit: generated[index]?.credit ?? null,
-            balance: generated[index]?.balance ?? null,
-        }));
-
-        setFinalData(merged);
 
     }, [location.state]);
+
+    useEffect(() => {
+        if (!formData) return;
+
+        //         const generated = generateSelfEmployeeBankData({
+        //   openingBalance: formData.balance
+        // });
+        //     setBankEveryData(generated)
+
+
+  
+
+        const generateEvery = generateEveryBankData({
+            openingBalance: parseInt(formData.balance),
+            salaryAmount: parseInt(formData.salaryAmount),
+            company: formData.salaryCompany
+        })
+        setBankEveryData(generateEvery)
+    }, [formData])
 
     if (!formData) {
         return <p>No data received</p>;
     }
+
+     const formattedDate = new Date(formData.date ).toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+        });
 
     return (
         <div>
@@ -424,12 +450,14 @@ function SbiPDF() {
                     micrCode={formData.micrCode ?? ""}
                     nominationRegistered={formData.nominationRegistered ?? ""}
                     balance={formData.balance ?? ""}
-                    finalData={finalData}
+                    bankEveryData={bankEveryData}
                     companyName={formData.salaryCompany ?? ""}
+                    interestRate={formData.interestRate ?? ""}
+                    modeBalance={formData.modeBalance ?? ""}
                 />
             </PDFViewer>
             <PDFDownloadLink document={<MyDocument
-                accountName={formData.accountName ?? " "}
+                accountName={formData.accountName ?? ""}
                 address={formData.address ?? ""}
                 date={formData.date ?? ""}
                 accountNumber={formData.accountNumber ?? ""}
@@ -442,7 +470,7 @@ function SbiPDF() {
                 micrCode={formData.micrCode ?? ""}
                 nominationRegistered={formData.nominationRegistered ?? ""}
                 balance={formData.balance ?? ""}
-                finalData={finalData}
+                bankEveryData={bankEveryData}
 
             />} fileName="1643187072367f6n02eHnEKt3QtUM.pdf">
                 {({ loading }) =>

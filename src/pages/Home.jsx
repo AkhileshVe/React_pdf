@@ -5,11 +5,20 @@ import "./home.css";
 import AOS from "aos";
 import "aos/dist/aos.css";
   import { Viewer } from "@react-pdf-viewer/core";
+  let aaa = [1,2,3,4,5,6,7]
+  for (let i= aaa.length; 1 >=i ;i--){
+    console.log(i)
+  }
+
 
 function HomePage() {
   let navigation = useNavigate()
+  let arr = ()=>{
+
+}
 
   useEffect(() => {
+    arr()
     AOS.init();
   }, []);
   return (

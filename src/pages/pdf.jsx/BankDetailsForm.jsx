@@ -18,8 +18,11 @@ export default function BankDetailsForm() {
     ifsCode: "",
     micrCode: "",
     nominationRegistered: "",
-    balance: "",
-    salaryCompany: ""
+    balance: 0,
+    salaryCompany: "",
+    salaryAmount: 0,
+    modeBalance: 0,
+    interestRate: 0
   });
 
   const [errors, setErrors] = useState({});
@@ -59,8 +62,17 @@ export default function BankDetailsForm() {
     if (!form.drawingPower)
       newErrors.drawingPower = "Drawing Power required";
 
+    if (!form.modeBalance)
+      newErrors.modeBalance = "Mode Balance required";
+
+    if (!form.interestRate)
+      newErrors.interestRate = "Interest Rate required";
+
     if (!form.salaryCompany)
-      newErrors.salaryCompany = "Drawing Power required";
+      newErrors.salaryCompany = "salary Company Name required";
+
+    if (!form.salaryAmount)
+      newErrors.salaryAmount = "salary Amount is required";
 
     if (!form.ckycrNumber)
       newErrors.ckycrNumber = "CKYCR number required";
@@ -78,7 +90,6 @@ export default function BankDetailsForm() {
   };
 
   const handleSubmit = (e) => {
-
     e.preventDefault();
 
     const validationErrors = validate();
@@ -129,7 +140,7 @@ export default function BankDetailsForm() {
 
             <div className="form-group">
               <label>Date      :</label>
-              <div className="form-group1">
+              <div className="form-group1" >
                 <input
                   type="date"
                   name="date"
@@ -174,6 +185,51 @@ export default function BankDetailsForm() {
                 />
                 {errors.branch && <span className="error">{errors.branch}</span>}
               </div></div>
+
+            <div className="form-group">
+              <label>Drawing Power      :</label>
+              <div className="form-group1">
+                <input
+                  placeholder="drawingPower"
+                  name="drawingPower"
+                  onChange={handleChange}
+                  className={errors.drawingPower ? "error-input" : ""}
+                />
+                {errors.drawingPower && <span className="error">{errors.drawingPower}</span>}
+              </div></div>
+
+            <div className="form-group">
+              <label>Interest Rate(% p.a.)  :</label>
+              <div className="form-group1">
+                <input
+                  placeholder="interestRate"
+                  name="interestRate"
+                  onChange={handleChange}
+                  className={errors.interestRate ? "error-input" : ""}
+                />
+                {errors.interestRate && <span className="error">{errors.interestRate}</span>}
+              </div></div>
+
+
+            <div className="form-group">
+              <label>MOD Balance         :</label>
+              <div className="form-group1">
+                <input
+                  placeholder="modeBalance"
+                  name="modeBalance"
+                  onChange={handleChange}
+                  className={errors.modeBalance ? "error-input" : ""}
+                />
+                {errors.modeBalance && <span className="error">{errors.modeBalance}</span>}
+              </div></div>
+
+
+
+
+
+
+
+
 
             <div className="form-group">
               <label>CIF Number      :</label>
@@ -224,8 +280,10 @@ export default function BankDetailsForm() {
                 {errors.micrCode && <span className="error">{errors.micrCode}</span>}
               </div></div>
 
+
+
             <div className="form-group">
-              <label>Drawing Power      :</label>
+              <label>Salary Company Name  :</label>
               <div className="form-group1">
                 <input
                   placeholder="salaryCompany"
@@ -237,15 +295,15 @@ export default function BankDetailsForm() {
               </div></div>
 
             <div className="form-group">
-              <label>Salary Company Name  :</label>
+              <label>Salary Amount     :</label>
               <div className="form-group1">
                 <input
-                  placeholder="Company_name"
-                  name="Company_name"
+                  placeholder="salaryAmount"
+                  name="salaryAmount"
                   onChange={handleChange}
-                  className={errors.Company_name ? "error-input" : ""}
+                  className={errors.salaryAmount ? "error-input" : ""}
                 />
-                {errors.Company_name && <span className="error">{errors.Company_name}</span>}
+                {errors.salaryAmount && <span className="error">{errors.salaryAmount}</span>}
               </div></div>
 
             <div className="form-group">
