@@ -6,10 +6,6 @@ import Logo from "../assets/logo.svg";
 
 function Login() {
   const navigate = useNavigate();
-  const handleLogin = () => {
-    localStorage.setItem("isAuth", "true");
-    navigate("/home", { replace: true });
-  };
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -20,7 +16,13 @@ function Login() {
       alert("Please fill all fields");
       return;
     }
+    if (password == "1234") {
+      localStorage.setItem("isAuth", true)
+      navigate("/home", { replace: true });
 
+    } else {
+      alert("Incorrect password");
+    }
     console.log({ email, password });
   }
 
@@ -53,7 +55,7 @@ function Login() {
 
         <div className="login-right">
 
-        <div onClick={()=>navigate("/home")}><img src={Logo} alt="BankGen Logo" /></div>
+          <div><img src={Logo} alt="BankGen Logo" /></div>
           <h2>Login</h2>
 
           <form onSubmit={handleSubmit}>

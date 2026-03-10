@@ -14,7 +14,7 @@ const randomNumber = (len) =>
     .toString()
     .padStart(len, "0");
 
-/* description generators */
+/* -------- Description generators -------- */
 
 const generateSalary = (company) =>
   `BY TRANSFER- NEFT*${company}*District Treasury`;
@@ -34,6 +34,8 @@ const generateACH = () =>
 const generateInterest = () =>
   "CREDIT INTEREST--";
 
+/* -------- Main Generator -------- */
+
 export function generateMixedStatement({
   openingBalance = 0,
   salaryAmount = 48610,
@@ -43,117 +45,133 @@ export function generateMixedStatement({
   let balance = openingBalance;
 
   const today = dayjs();
-  const start = today.subtract(6, "month").startOf("month");
+  const start = today.subtract(6, "month"); // exact 6 month
 
   const data = [];
 
-  let month = start;
+  let month = start.startOf("month");
 
   while (month.isBefore(today)) {
 
-    /* ---- Salary ---- */
-
     const salaryDate = month.date(7);
 
-    balance += salaryAmount;
+    /* ---- Salary ---- */
 
-    data.push({
-      txnDate: salaryDate.format("D MMM YYYY"),
-      valueDate: salaryDate.format("D MMM YYYY"),
-      description: generateSalary(company),
-      refNo: "TRANSFER FROM " + randomNumber(10),
-      debit: "",
-      credit: formatMoney(salaryAmount),
-      balance: formatMoney(balance)
-    });
+    if (salaryDate.isAfter(start) && salaryDate.isBefore(today)) {
 
-    /* ---- Big withdrawal ---- */
-
-    const withdraw = random(10000, 50000);
-
-    if (balance > withdraw) {
-      balance -= withdraw;
+      balance += salaryAmount;
 
       data.push({
-        txnDate: salaryDate.add(1, "day").format("D MMM YYYY"),
-        valueDate: salaryDate.add(1, "day").format("D MMM YYYY"),
-        description: generateWithdrawal(),
-        refNo: "TRANSFER TO " + randomNumber(10),
-        debit: formatMoney(withdraw),
-        credit: "",
+        txnDate: salaryDate.format("D MMM YYYY"),
+        valueDate: salaryDate.format("D MMM YYYY"),
+        description: generateSalary(company),
+        refNo: "TRANSFER FROM " + randomNumber(10),
+        debit: "",
+        credit: formatMoney(salaryAmount),
         balance: formatMoney(balance)
       });
-    }
 
-    /* ---- Cash withdrawal ---- */
+      /* ---- Withdrawal ---- */
 
-    const cash = random(10000, 40000);
+      const withdrawDate = salaryDate.add(1, "day");
+      const withdraw = random(10000, 50000);
 
-    if (balance > cash) {
-      balance -= cash;
+      if (balance > withdraw && withdrawDate.isBefore(today)) {
 
-      data.push({
-        txnDate: salaryDate.add(1, "day").format("D MMM YYYY"),
-        valueDate: salaryDate.add(1, "day").format("D MMM YYYY"),
-        description: generateCash(),
-        refNo: "",
-        debit: formatMoney(cash),
-        credit: "",
-        balance: formatMoney(balance)
-      });
-    }
+        balance -= withdraw;
 
-    /* ---- ECS charge ---- */
+        data.push({
+          txnDate: withdrawDate.format("D MMM YYYY"),
+          valueDate: withdrawDate.format("D MMM YYYY"),
+          description: generateWithdrawal(),
+          refNo: "TRANSFER TO " + randomNumber(10),
+          debit: formatMoney(withdraw),
+          credit: "",
+          balance: formatMoney(balance)
+        });
+      }
 
-    const ecs = random(90, 500);
+      /* ---- Cash withdrawal ---- */
 
-    if (balance > ecs) {
-      balance -= ecs;
+      const cashDate = salaryDate.add(2, "day");
+      const cash = random(10000, 40000);
 
-      data.push({
-        txnDate: salaryDate.add(3, "day").format("D MMM YYYY"),
-        valueDate: salaryDate.add(3, "day").format("D MMM YYYY"),
-        description: generateACH(),
-        refNo: randomNumber(7),
-        debit: formatMoney(ecs),
-        credit: "",
-        balance: formatMoney(balance)
-      });
-    }
+      if (balance > cash && cashDate.isBefore(today)) {
 
-    /* ---- IMPS transfer ---- */
+        balance -= cash;
 
-    const imps = random(200, 3000);
+        data.push({
+          txnDate: cashDate.format("D MMM YYYY"),
+          valueDate: cashDate.format("D MMM YYYY"),
+          description: generateCash(),
+          refNo: "",
+          debit: formatMoney(cash),
+          credit: "",
+          balance: formatMoney(balance)
+        });
+      }
 
-    if (balance > imps) {
-      balance -= imps;
+      /* ---- ECS Charge ---- */
 
-      data.push({
-        txnDate: salaryDate.add(15, "day").format("D MMM YYYY"),
-        valueDate: salaryDate.add(15, "day").format("D MMM YYYY"),
-        description: generateIMPS(),
-        refNo: "TRANSFER TO " + randomNumber(10),
-        debit: formatMoney(imps),
-        credit: "",
-        balance: formatMoney(balance)
-      });
+      const ecsDate = salaryDate.add(3, "day");
+      const ecs = random(90, 500);
+
+      if (balance > ecs && ecsDate.isBefore(today)) {
+
+        balance -= ecs;
+
+        data.push({
+          txnDate: ecsDate.format("D MMM YYYY"),
+          valueDate: ecsDate.format("D MMM YYYY"),
+          description: generateACH(),
+          refNo: randomNumber(7),
+          debit: formatMoney(ecs),
+          credit: "",
+          balance: formatMoney(balance)
+        });
+      }
+
+      /* ---- IMPS Transfer ---- */
+
+      const impsDate = salaryDate.add(15, "day");
+      const imps = random(200, 3000);
+
+      if (balance > imps && impsDate.isBefore(today)) {
+
+        balance -= imps;
+
+        data.push({
+          txnDate: impsDate.format("D MMM YYYY"),
+          valueDate: impsDate.format("D MMM YYYY"),
+          description: generateIMPS(),
+          refNo: "TRANSFER TO " + randomNumber(10),
+          debit: formatMoney(imps),
+          credit: "",
+          balance: formatMoney(balance)
+        });
+      }
     }
 
     /* ---- Interest ---- */
 
-    const interest = random(5, 20);
+    const interestDate = month.date(25);
 
-    balance += interest;
+    if (interestDate.isAfter(start) && interestDate.isBefore(today)) {
 
-    data.push({
-      txnDate: month.date(25).format("D MMM YYYY"),
-      valueDate: month.date(25).format("D MMM YYYY"),
-      description: generateInterest(),
-      refNo: "",
-      debit: "",
-      credit: formatMoney(interest),
-      balance: formatMoney(balance)
-    });
+      const interest = random(5, 20);
+
+      balance += interest;
+
+      data.push({
+        txnDate: interestDate.format("D MMM YYYY"),
+        valueDate: interestDate.format("D MMM YYYY"),
+        description: generateInterest(),
+        refNo: "",
+        debit: "",
+        credit: formatMoney(interest),
+        balance: formatMoney(balance)
+      });
+    }
 
     month = month.add(1, "month");
   }

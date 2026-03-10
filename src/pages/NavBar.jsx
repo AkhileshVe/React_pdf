@@ -1,26 +1,48 @@
 import "./navbar.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Logo from "../assets/logo.svg";
-export default function Navbar() {
-    const navigate = useNavigate()
+import { HashLink } from "react-router-hash-link";
 
-    const loginNavigation = () => {
-        navigate("/")
-    }
+export default function Navbar() {
+
+    const navigate = useNavigate();
+
+    const logout = () => {
+        localStorage.removeItem("isAuth");
+        navigate("/");
+    };
 
     return (
         <nav className="navbar">
+
             <div onClick={() => navigate("/home")}>
                 <img src={Logo} alt="BankGen Logo" />
             </div>
+
             <ul className="nav-links">
-                <li><a href="/home">Home</a></li>
-                <li><a href="home#about">About</a></li>
-                <li><a href="/bankdetails">Services</a></li>
-                <li><a href="home#contact">Contact</a></li>
-                {/* <li><a href="/sbiPdf">Generate</a></li> */}
+
+                <li>
+                    <Link smooth to="/home">Home</Link>
+                </li>
+
+                <li>
+                    <HashLink smooth={true} to="/home#about">About</HashLink>
+                </li>
+
+                <li>
+                    <Link smooth to="/bankdetails">Services</Link>
+                </li>
+
+                <li>
+                    <HashLink smooth to="/home#contact">Contact</HashLink>
+                </li>
+
             </ul>
-            <button onClick={() => loginNavigation()} className="login-btn">Login</button>
+
+            <button onClick={logout} className="login-btn">
+                Logout
+            </button>
+
         </nav>
     );
 }

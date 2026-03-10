@@ -296,17 +296,6 @@ const MyDocument = ({
                 {bankEveryData.map((item, index) => {
                     return (
                         <View style={styles.tableRow} key={index} wrap={false}>
-                            {/* <Text style={styles.tableColDate}>{
-                                dayjs().subtract(item.txnDate, "days").format("D MMM YYYY")
-                            }</Text>
-                            <Text style={styles.tableColDate}>{
-                                dayjs().subtract(item.valueDate, "days").format("D MMM YYYY")
-                            }</Text> 
-                             <Text style={styles.tableColDis}>{changeDescription(item.description, companyName)}</Text>
-                            <Text style={styles.tableColRef}>{changeSpecific(item.refNo)}</Text>
-                            <Text style={styles.tableCol}>{formatMoney(item.debit)}</Text>
-                            <Text style={styles.tableCol}> {formatMoney(item.credit)}</Text>
-                            <Text style={styles.tableCol}>{formatMoney(item.balance)}</Text> */}
 
                             <Text style={styles.tableColDate}>{item.txnDate}</Text>
                             <Text style={styles.tableColDate}>{item.valueDate}</Text>
@@ -347,40 +336,42 @@ function SbiPDF() {
     useEffect(() => {
         if (!formData) return;
 
+        
+
+            // const generateMixed = generateMixedStatement({
+            //     openingBalance: parseInt(formData.balance),
+            //     salaryAmount: parseInt(formData.salaryAmount),
+            //     company: "RBISOGOMPEP"
+            // });
+            // setBankEveryData(generateMixed)
+        // console.log(formData.pdf_type, "fdghddnj ============== formData.pdf_type =============")
+        // ==========================.  Self_Employee ==============
+         if (formData.pdf_type == "Self_Employee") {
+            const generated = generateSelfEmployeeBankData({
+                openingBalance: formData.balance
+            });
+            setBankEveryData(generated)
+        }
+
+        // // ==========================.  Salary ==============
+        else if (formData.pdf_type == "Salary") {
+            const generateEvery = generateEveryBankData({
+                openingBalance: parseInt(formData.balance),
+                salaryAmount: parseInt(formData.salaryAmount),
+                company: formData.salaryCompany
+            })
+            setBankEveryData(generateEvery)
+        }
+      else  {
             const generateMixed = generateMixedStatement({
                 openingBalance: parseInt(formData.balance),
                 salaryAmount: parseInt(formData.salaryAmount),
                 company: "RBISOGOMPEP"
             });
             setBankEveryData(generateMixed)
-        // console.log(formData.pdf_type, "fdghddnj ============== formData.pdf_type =============")
-        // // ==========================.  Self_Employee ==============
-        // if (formData.pdf_type == "Self_Employee") {
-        //     const generated = generateSelfEmployeeBankData({
-        //         openingBalance: formData.balance
-        //     });
-        //     setBankEveryData(generated)
-        // }
-
-        // // ==========================.  Salary ==============
-        // if (formData.pdf_type == "Salary") {
-        //     const generateEvery = generateEveryBankData({
-        //         openingBalance: parseInt(formData.balance),
-        //         salaryAmount: parseInt(formData.salaryAmount),
-        //         company: formData.salaryCompany
-        //     })
-        //     setBankEveryData(generateEvery)
-        // }
-
+        }
         // // ==========================.  Salaried_banking ==============
-        // if (formData.PDf_type == "Salaried_banking") {
-        //     const generateMixed = generateMixedStatement({
-        //         openingBalance: parseInt(formData.balance),
-        //         salaryAmount: parseInt(formData.salaryAmount),
-        //         company: "RBISOGOMPEP"
-            // });
-        //     setBankEveryData(generateMixed)
-        // }
+      
 
     }, [formData])
 
@@ -392,7 +383,7 @@ function SbiPDF() {
         <div>
             <Navbar />
 
-            <PDFViewer width="100%" height="600"  >
+            <PDFViewer width="99.7%" height="600"  >
                 <MyDocument
                     accountName={formData.accountName ?? ""}
                     address={formData.address ?? ""}

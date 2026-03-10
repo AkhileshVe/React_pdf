@@ -1,42 +1,60 @@
-import { useState } from "react";
-import PdfPreview from "./Pdf_prev";
-import BankForm from "./bankstate";
 
-function Dashboard() {
+import { useNavigate } from "react-router-dom";
+import Navbar from "../NavBar";
 
-  const [formData, setFormData] = useState({
-    name: "",
-    accountNumber: "",
-    balance: ""
-  });
+export default function Dashboard() {
 
-  const [transactions, setTransactions] = useState([
-    { date: "", description: "", debit: "", credit: "" }
-  ]);
+  const navigate = useNavigate();
+
+  const banks = [
+    {
+      name: "State Bank of India",
+      short: "SBI",
+      logo: "https://upload.wikimedia.org/wikipedia/commons/c/cc/SBI-logo.svg"
+    },
+    {
+      name: "Bank of India",
+      short: "BOI",
+      logo: "https://1000logos.net/wp-content/uploads/2021/06/Bank-of-India-logo.png"
+    },
+    {
+      name: "HDFC Bank",
+      short: "HDFC",
+      logo: "https://upload.wikimedia.org/wikipedia/commons/2/28/HDFC_Bank_Logo.svg"
+    },
+    {
+      name: "ICICI Bank",
+      short: "ICICI",
+      logo: "https://upload.wikimedia.org/wikipedia/commons/1/12/ICICI_Bank_Logo.svg"
+    }
+  ];
 
   return (
-    <div style={{ display: "flex", height: "100vh" }}>
+    <div className="services-page">
+        <Navbar/>
 
-      {/* LEFT PDF */}
-      <div style={{ width: "50%", borderRight: "1px solid #ddd" }}>
-        <PdfPreview
-          formData={formData}
-          transactions={transactions}
-        />
-      </div>
+      <h1>Select Your Bank</h1>
 
-      {/* RIGHT FORM */}
-      <div style={{ width: "50%", padding: "20px", overflow: "auto" }}>
-        <BankForm
-          formData={formData}
-          setFormData={setFormData}
-          transactions={transactions}
-          setTransactions={setTransactions}
-        />
+      <div className="bank-grid">
+
+        {banks.map((bank, index) => (
+
+          <div
+            key={index}
+            className="bank-card"
+            onClick={() => navigate("/bankdetails", { state: bank })}
+          >
+
+            <img src={bank.logo}  alt={bank.short} />
+
+            <h3>{bank.name}</h3>
+
+          </div>
+
+        ))}
+
       </div>
 
     </div>
   );
 }
-
-export default Dashboard;

@@ -116,7 +116,7 @@ export default function BankDetailsForm() {
       <div className="formContainer">
         <div className="form-container">
 
-          <h2>Bank Details Form</h2>
+          <h2 style={{marginBottom:"50px"}}>Bank Details Form</h2>
 
           <form onSubmit={handleSubmit}>
             <div className="form-group">
@@ -239,14 +239,6 @@ export default function BankDetailsForm() {
                 />
                 {errors.modeBalance && <span className="error">{errors.modeBalance}</span>}
               </div></div>
-
-
-
-
-
-
-
-
 
             <div className="form-group">
               <label>CIF Number      :</label>

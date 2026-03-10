@@ -5,6 +5,7 @@ import Footer from "./footer";
 import "./home.css";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { FaFilePdf, FaExchangeAlt, FaLock, FaChartLine } from "react-icons/fa";
   import { Viewer } from "@react-pdf-viewer/core";
   let aaa = [1,2,3,4,5,6,7]
   for (let i= aaa.length; 1 >=i ;i--){
@@ -38,7 +39,7 @@ function HomePage() {
             </p>
           
 
-            <button className="primary-btn">Generate Now</button>
+            <button className="primary-btn" onClick={()=>navigation("/bankdetails")}>Generate Now</button>
           </div>
 
           <div className="home-right">
@@ -52,6 +53,56 @@ function HomePage() {
         </div>
 
       </section>
+
+
+
+
+<section className="features-section">
+
+      <h2 className="features-title">Powerful Banking Tools</h2>
+
+      <div className="features-grid">
+
+        <div className="feature-card">
+          <FaFilePdf className="feature-icon" />
+          <h3>PDF Statement Generator</h3>
+          <p>
+            Instantly generate realistic bank statements with
+            dynamic transactions for development and testing.
+          </p>
+        </div>
+
+        <div className="feature-card">
+          <FaExchangeAlt className="feature-icon" />
+          <h3>Transaction Simulation</h3>
+          <p>
+            Simulate debit, credit, salary, and UPI transactions
+            automatically across multiple months.
+          </p>
+        </div>
+
+        <div className="feature-card">
+          <FaChartLine className="feature-icon" />
+          <h3>Balance Analytics</h3>
+          <p>
+            Track balances and transaction patterns with
+            automatically calculated running balances.
+          </p>
+        </div>
+
+        <div className="feature-card">
+          <FaLock className="feature-icon" />
+          <h3>Secure Testing</h3>
+          <p>
+            Generate mock banking data safely without using
+            real customer financial information.
+          </p>
+        </div>
+
+      </div>
+
+    </section>
+
 
 
       <section id="about" className="section about">
