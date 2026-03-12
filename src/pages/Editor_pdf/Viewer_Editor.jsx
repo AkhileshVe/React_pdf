@@ -31,7 +31,7 @@ export default function Dashboard() {
 
   return (
     <div className="services-page">
-        <Navbar/>
+      <Navbar />
 
       <h1>Select Your Bank</h1>
 
@@ -45,7 +45,7 @@ export default function Dashboard() {
             onClick={() => navigate("/bankdetails", { state: bank })}
           >
 
-            <img src={bank.logo}  alt={bank.short} />
+            <img src={bank.logo} alt={bank.short} />
 
             <h3>{bank.name}</h3>
 

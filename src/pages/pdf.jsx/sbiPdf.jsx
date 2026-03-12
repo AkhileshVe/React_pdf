@@ -336,17 +336,17 @@ function SbiPDF() {
     useEffect(() => {
         if (!formData) return;
 
-        
 
-            // const generateMixed = generateMixedStatement({
-            //     openingBalance: parseInt(formData.balance),
-            //     salaryAmount: parseInt(formData.salaryAmount),
-            //     company: "RBISOGOMPEP"
-            // });
-            // setBankEveryData(generateMixed)
+
+        // const generateMixed = generateMixedStatement({
+        //     openingBalance: parseInt(formData.balance),
+        //     salaryAmount: parseInt(formData.salaryAmount),
+        //     company: "RBISOGOMPEP"
+        // });
+        // setBankEveryData(generateMixed)
         // console.log(formData.pdf_type, "fdghddnj ============== formData.pdf_type =============")
         // ==========================.  Self_Employee ==============
-         if (formData.pdf_type == "Self_Employee") {
+        if (formData.pdf_type == "Self_Employee") {
             const generated = generateSelfEmployeeBankData({
                 openingBalance: formData.balance
             });
@@ -362,7 +362,7 @@ function SbiPDF() {
             })
             setBankEveryData(generateEvery)
         }
-      else  {
+        else {
             const generateMixed = generateMixedStatement({
                 openingBalance: parseInt(formData.balance),
                 salaryAmount: parseInt(formData.salaryAmount),
@@ -371,7 +371,7 @@ function SbiPDF() {
             setBankEveryData(generateMixed)
         }
         // // ==========================.  Salaried_banking ==============
-      
+
 
     }, [formData])
 

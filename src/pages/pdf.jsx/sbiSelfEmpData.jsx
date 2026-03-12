@@ -92,48 +92,48 @@ export function generateSelfEmployeeBankData({
 
     for (let i = 0; i < txnCount; i++) {
 
-      const isCredit = Math.random() < 0.25; 
+      const isCredit = Math.random() < 0.25;
 
-    if (balance < 500) {
+      if (balance < 500) {
 
-  const creditArrey = [
-    100, 10000, 2200, 3000, 200, 400, 5000, 300,
-    150, 1200, 2000, 7000, 8000, 1500, 350, 450
-  ];
-//  const credit  = random(200,10000)
-  const credit = creditArrey[random(0, creditArrey.length - 1)];
+        const creditArrey = [
+          100, 10000, 2200, 3000, 200, 400, 5000, 300,
+          150, 1200, 2000, 7000, 8000, 1500, 350, 450
+        ];
+        //  const credit  = random(200,10000)
+        const credit = creditArrey[random(0, creditArrey.length - 1)];
 
-  balance += credit;
+        balance += credit;
 
-  data.push({
-    txnDate: currentDate.format("D MMM YYYY"),
-    valueDate: currentDate.format("D MMM YYYY"),
-    description: generateCredit(),
-    refNo: "TRANSFER FROM " + changeMiddle(randomNumber(13)),
-    debit: "",
-    credit: formatMoney(credit),
-    balance: formatMoney(balance)
-  });
+        data.push({
+          txnDate: currentDate.format("D MMM YYYY"),
+          valueDate: currentDate.format("D MMM YYYY"),
+          description: generateCredit(),
+          refNo: "TRANSFER FROM " + changeMiddle(randomNumber(13)),
+          debit: "",
+          credit: formatMoney(credit),
+          balance: formatMoney(balance)
+        });
 
-}else {
+      } else {
 
-  if (balance <= 100) return; 
+        if (balance <= 100) return;
 
-  const debit = random(50, Math.min(balance, 2000));
+        const debit = random(50, Math.min(balance, 2000));
 
-  balance -= debit;
+        balance -= debit;
 
-  data.push({
-    txnDate: currentDate.format("D MMM YYYY"),
-    valueDate: currentDate.format("D MMM YYYY"),
-    description: generateUPI(),
-    refNo: "TRANSFER TO " + changeMiddle(randomNumber(13)),
-    debit: formatMoney(debit),
-    credit: "",
-    balance: formatMoney(balance)
-  });
+        data.push({
+          txnDate: currentDate.format("D MMM YYYY"),
+          valueDate: currentDate.format("D MMM YYYY"),
+          description: generateUPI(),
+          refNo: "TRANSFER TO " + changeMiddle(randomNumber(13)),
+          debit: formatMoney(debit),
+          credit: "",
+          balance: formatMoney(balance)
+        });
 
-}
+      }
     }
 
     currentDate = currentDate.add(1, "day");

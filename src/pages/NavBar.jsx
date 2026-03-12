@@ -30,11 +30,11 @@ export default function Navbar() {
                 </li>
 
                 <li>
-                    <Link smooth to="/bankdetails">Services</Link>
+                    <HashLink smooth to="/home#contact">Contact</HashLink>
                 </li>
 
                 <li>
-                    <HashLink smooth to="/home#contact">Contact</HashLink>
+                    <Link smooth to="/bankdetails">Services</Link>
                 </li>
 
             </ul>
