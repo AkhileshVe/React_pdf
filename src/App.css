@@ -81,18 +81,21 @@
 
 .bank-grid {
   display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 10px;
-  /* width: 1100px; */
+  width: 98%;
   background-color: #fbf6f2;
   margin-top: 40px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  display: grid; 
+  /* grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); */
   gap: 30px;
 }
 
 .bank-card {
   background: white;
   padding: 30px;
+  width: 250px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   cursor: pointer;
