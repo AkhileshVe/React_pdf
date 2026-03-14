@@ -210,7 +210,7 @@ const MyDocument = ({
                 </View>
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>Account Number</Text>
-                    <Text style={{ marginLeft: 46 }}>: {accountNumber || "00000042511739493"}</Text>
+                    <Text style={{ marginLeft: 46 }}>: 000000{accountNumber || "00000042511739493"}</Text>
                 </View>
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>Account Discription</Text>
@@ -239,36 +239,36 @@ const MyDocument = ({
                 </View>
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>CKYCR Number</Text>
-                    <Text style={{ marginLeft: 47 }}>: {ckycrNumber || "XXXXXXXXXXX1234"}</Text>
+                    <Text style={{ marginLeft: 49 }}>: {ckycrNumber || "XXXXXXXXXXX1234"}</Text>
                 </View>
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>IFS Code</Text>
-                    <Text style={{ marginLeft: 77 }}>: {ifsCode || "SBIN0001499"}</Text>
+                    <Text style={{ marginLeft: 78 }}>: {ifsCode || "SBIN0001499"}</Text>
                 </View>
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>(Indian Financial System)</Text>
-                    <Text style={{ marginLeft: 12 }}></Text>
+                    <Text style={{ marginLeft: 14 }}></Text>
                 </View>
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>MICR Code</Text>
-                    <Text style={{ marginLeft: 65 }}>: {micrCode || "462002502"}</Text>
+                    <Text style={{ marginLeft: 69 }}>: {micrCode || "462002502"}</Text>
                 </View>
 
 
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>(Magnetic Ink Character Recognition)</Text>
-                    <Text style={{ marginLeft: 12 }}></Text>
+                    <Text style={{ marginLeft: 16 }}></Text>
                 </View>
 
 
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>Nomination Registered</Text>
-                    <Text style={{ marginLeft: 16 }}>: {nominationRegistered || "No"}</Text>
+                    <Text style={{ marginLeft: 20 }}>: {nominationRegistered || "No"}</Text>
                 </View>
 
                 <View style={styles.textParent}>
                     <Text style={styles.textst}>Balance as on {formattedSixMonthsAgo}</Text>
-                    <Text style={{ marginLeft: 3 }}>: {formatMoney(balance)}</Text>
+                    <Text style={{ marginLeft: 0 }}>: {formatMoney(balance)}</Text>
                 </View>
                 <View style={styles.textParent}>
                     <Text style={{ fontSize: 12, marginTop: 10, marginBottom: 2 }}>Account Statement from {formattedSixMonthsAgo} to {formattedToday}</Text>

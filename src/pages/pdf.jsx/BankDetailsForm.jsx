@@ -23,7 +23,8 @@ export default function BankDetailsForm() {
     salaryAmount: 0,
     modeBalance: 0,
     interestRate: 0,
-    pdf_type: ""
+    pdf_type: "",
+    pdf_Name: ""
   });
 
   const [errors, setErrors] = useState({});
@@ -334,6 +335,16 @@ export default function BankDetailsForm() {
                   className={errors.balance ? "error-input" : ""}
                 />
                 {errors.balance && <span className="error">{errors.balance}</span>}
+              </div></div>
+
+              <div className="form-group">
+              <label>PDF NAME     :</label>
+              <div className="form-group1">
+                <input
+                  placeholder="PDF NAME"
+                  name="pdf_Name"
+                  onChange={handleChange}
+                />
               </div></div>
 
             <button type="submit">Generate Statement</button>
