@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     },
 
     tableColHeaderDis: {
-        borderLeftWidth: 1,
+        borderLeftWidth: 0,
         width: "32%",
         paddingTop: 2,
         paddingHorizontal: 2,
@@ -134,17 +134,15 @@ const styles = StyleSheet.create({
         fontFamily: "Helvetica",
         borderStyle: "solid",
         borderWidth: 1,
-        borderLeftWidth: 0,
         borderTopWidth: 1,
     },
     tableColDis: {
-        borderLeftWidth: 1,
+        borderLeftWidth: 0,
         width: "32%",
         paddingTop: 2,
         paddingHorizontal: 2,
         paddingBottom: 2.5,
         borderWidth: 1,
-        borderLeftWidth: 0,
         borderTopWidth: 0,
         flexShrink: 1
     },
@@ -320,13 +318,14 @@ function SbiPDF() {
 
     // const [bankData, setBankData] = useState([]);
     const [bankEveryData, setBankEveryData] = useState([]);
-    const [fileName, setFileName] = useState("1643187072367f6n02eHnEKt3QtUM.pdf");
+    const [fileName, setFileName] = useState("000000187072367f6n02eHnEKt3QtUM.pdf");
     const [formData, setFormData] = useState(null);
     const location = useLocation();
 
     useEffect(() => {
         if (location.state) {
             setFormData(location.state);
+
         } else {
             console.log("No navigation data found");
         }
@@ -337,7 +336,7 @@ function SbiPDF() {
         if (!formData) return;
 
 
-
+        setFileName(formData.pdf_Name)
         // const generateMixed = generateMixedStatement({
         //     openingBalance: parseInt(formData.balance),
         //     salaryAmount: parseInt(formData.salaryAmount),
@@ -420,7 +419,8 @@ function SbiPDF() {
                 balance={formData.balance ?? ""}
                 bankEveryData={bankEveryData}
 
-            />} fileName="1643187072367f6n02eHnEKt3QtUM.pdf">
+
+            />} fileName={fileName + ".pdf"}>
                 {({ loading }) =>
                     loading ? "Generating PDF..." : "Download SBI Statement"
                 }
