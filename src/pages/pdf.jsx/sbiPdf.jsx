@@ -52,6 +52,9 @@ const changeSpecific = (str) => {
     });
 };
 
+const upper = (val, fallback) =>
+  val ? val.toUpperCase() : fallback.toUpperCase();
+
 const styles = StyleSheet.create({
     page: {
         fontFamily: "Helvetica",
@@ -119,7 +122,6 @@ const styles = StyleSheet.create({
         paddingBottom: 2.5,
         textAlign: "right",
         borderStyle: "solid",
-        //borderWidth: 1,
         borderBottomWidth: 1
 
     },
@@ -193,7 +195,7 @@ const MyDocument = ({
             <Image style={styles.imagelogo} src={sbiLogo} />
             <View style={styles.section}>
                 <View style={styles.textParent}> <Text style={styles.textst}>Account Name</Text>
-                    <Text style={{ marginLeft: 55 }}>: {accountName || "Rajesh singh"}</Text>
+                    <Text style={{ marginLeft: 55 }} >: {(accountName || "Rajesh singh").toUpperCase() }</Text>
                 </View>
                 <View style={styles.textParent}> <Text style={styles.textst}>Address</Text>
                     <View style={{ width: 140, marginLeft: 83, display: "flex", flexDirection: "row" }}>
