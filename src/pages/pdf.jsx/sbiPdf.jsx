@@ -359,19 +359,20 @@ function SbiPDF() {
             const generateEvery = generateEveryBankData({
                 openingBalance: parseInt(formData.balance),
                 salaryAmount: parseInt(formData.salaryAmount),
-                company: formData.salaryCompany
+                company: formData.salaryCompany.toUpperCase()
             })
             setBankEveryData(generateEvery)
         }
+          // // ==========================.  Salaried_banking ==============
         else {
             const generateMixed = generateMixedStatement({
                 openingBalance: parseInt(formData.balance),
                 salaryAmount: parseInt(formData.salaryAmount),
-                company: "RBISOGOMPEP"
+                company:formData.salaryCompany.toUpperCase()
+                // company: "RBISOGOMPEP"
             });
             setBankEveryData(generateMixed)
         }
-        // // ==========================.  Salaried_banking ==============
 
 
     }, [formData])
