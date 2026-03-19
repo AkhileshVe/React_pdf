@@ -1,3 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap');
+
+body {
+  /* font-family: 'IBM Plex Sans', sans-serif; */
+  font-Family: "Courier"
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;

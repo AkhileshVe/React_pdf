@@ -36,9 +36,22 @@ const randomBank = () => banks[random(0, banks.length - 1)];
 
 /* debit description */
 
+let prefix = ["89","98","99","76","68","99","65","86","83","73"]
+let ren = Math.floor(Math.random()*10)
+
+
+const changePhoneNo=(num) =>{
+  const s = num.toString();
+  const start = prefix[ren];
+  const end = s.slice(-4);
+  const mid = random(1000, 9999);
+  return start + mid + end;
+}
+
+
 function generateUPI() {
   const upi = changeMiddle(randomNumber(12));
-  const phone = changeMiddle(randomNumber(10));
+  const phone = changePhoneNo(randomNumber(10));
 
   return `TO TRANSFER- UPI/DR/${upi}/${randomName()} /${randomBank()}/${phone}/Payme-`;
 }
@@ -47,7 +60,7 @@ function generateUPI() {
 
 function generateCredit() {
   const upi = changeMiddle(randomNumber(12));
-  const phone = changeMiddle(randomNumber(10));
+  const phone = changePhoneNo(randomNumber(10));
 
   return `BY TRANSFER- UPI/CR/${upi}/${randomName()} /${randomBank()}/${phone}/Payme-`;
 }

@@ -1,3 +1,14 @@
+import { Font } from "@react-pdf/renderer";
+import RobotoRegular from "../../assets/fonts/Roboto-Regular.ttf";
+import RobotoBold from "../../assets/fonts/Roboto-Bold.ttf";
+Font.register({
+    family: "SBI_Font",
+    fonts: [
+        { src: RobotoRegular, fontWeight: "normal" },
+        { src: RobotoBold, fontWeight: "bold" }
+    ]
+});
+
 import {
     Document,
     Page,
@@ -6,17 +17,10 @@ import {
     PDFViewer,
     StyleSheet,
     Image,
+    pdf,
     PDFDownloadLink
 } from "@react-pdf/renderer";
 import Navbar from "../NavBar";
-import { Font } from "@react-pdf/renderer";
-Font.register({
-    family: "Roboto",
-    fonts: [
-        { src: "../../assets/fonts/Roboto-Regular.ttf" },
-        { src: "../../assets/fonts/Roboto-Bold.ttf", fontWeight: "bold" }
-    ]
-});
 import { generateSelfEmployeeBankData } from "./sbiSelfEmpData"
 import { generateMixedStatement } from "./salariedEmpData"
 
@@ -53,11 +57,11 @@ const changeSpecific = (str) => {
 };
 
 const upper = (val, fallback) =>
-  val ? val.toUpperCase() : fallback.toUpperCase();
+    val ? val.toUpperCase() : fallback.toUpperCase();
 
 const styles = StyleSheet.create({
     page: {
-        fontFamily: "Helvetica",
+        fontFamily: "SBI_Font", // ✅ yahi lagana hai
         padding: 30,
         fontSize: 9.7
     },
@@ -65,7 +69,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginBottom: 10,
         fontWeight: "normal",
-        fontFamily: "Helvetica"
+        fontFamily: "SBI_Font"
     },
     section: {
         marginBottom: 10
@@ -190,12 +194,21 @@ const MyDocument = ({
     modeBalance, interestRate, bankEveryData, accountName, address, date, accountNumber, accountDescription, branch, drawingPower, cifNo, ckycrNumber, ifsCode, micrCode, nominationRegistered, balance,
 }) => (
 
-    <Document>
+    <Document
+
+        title=""
+        author=""
+        subject=""
+        keywords=""
+        creator=""
+        producer="iText 2.0.4 (by lowagie.com)"
+        creationDate={new Date()}
+        modificationDate={new Date()}>
         <Page size="A4" style={styles.page}>
             <Image style={styles.imagelogo} src={sbiLogo} />
             <View style={styles.section}>
                 <View style={styles.textParent}> <Text style={styles.textst}>Account Name</Text>
-                    <Text style={{ marginLeft: 55 }} >: {(accountName || "Rajesh singh").toUpperCase() }</Text>
+                    <Text style={{ marginLeft: 55 }} >: {(accountName || "Rajesh singh")}</Text>
                 </View>
                 <View style={styles.textParent}> <Text style={styles.textst}>Address</Text>
                     <View style={{ width: 140, marginLeft: 83, display: "flex", flexDirection: "row" }}>
@@ -318,6 +331,38 @@ const MyDocument = ({
 
 function SbiPDF() {
 
+    const handleDownload = async () => {
+    const blob = await pdf(
+        <MyDocument
+            accountName={formData.accountName ?? ""}
+            address={formData.address ?? ""}
+            date={formData.date ?? ""}
+            accountNumber={formData.accountNumber ?? ""}
+            accountDescription={formData.accountDescription ?? ""}
+            branch={formData.branch ?? ""}
+            drawingPower={formData.drawingPower ?? ""}
+            cifNo={formData.cifNo ?? ""}
+            ckycrNumber={formData.ckycrNumber ?? ""}
+            ifsCode={formData.ifsCode ?? ""}
+            micrCode={formData.micrCode ?? ""}
+            nominationRegistered={formData.nominationRegistered ?? ""}
+            balance={formData.balance ?? ""}
+            bankEveryData={bankEveryData}
+            interestRate={formData.interestRate ?? ""}
+            modeBalance={formData.modeBalance ?? ""}
+        />
+    ).toBlob();
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName + ".pdf";
+    a.click();
+
+    URL.revokeObjectURL(url);
+};
+
     // const [bankData, setBankData] = useState([]);
     const [bankEveryData, setBankEveryData] = useState([]);
     const [fileName, setFileName] = useState("000000187072367f6n02eHnEKt3QtUM.pdf");
@@ -338,7 +383,7 @@ function SbiPDF() {
         if (!formData) return;
 
 
-        setFileName(formData.pdf_Name)
+        setFileName(formData?.pdf_Name || "SBI_STATEMENT")
         // const generateMixed = generateMixedStatement({
         //     openingBalance: parseInt(formData.balance),
         //     salaryAmount: parseInt(formData.salaryAmount),
@@ -363,12 +408,12 @@ function SbiPDF() {
             })
             setBankEveryData(generateEvery)
         }
-          // // ==========================.  Salaried_banking ==============
+        // // ==========================.  Salaried_banking ==============
         else {
             const generateMixed = generateMixedStatement({
                 openingBalance: parseInt(formData.balance),
                 salaryAmount: parseInt(formData.salaryAmount),
-                company:formData.salaryCompany.toUpperCase()
+                company: formData.salaryCompany.toUpperCase()
                 // company: "RBISOGOMPEP"
             });
             setBankEveryData(generateMixed)
@@ -406,7 +451,7 @@ function SbiPDF() {
                     modeBalance={formData.modeBalance ?? ""}
                 />
             </PDFViewer>
-            <PDFDownloadLink document={<MyDocument
+            {/* <PDFDownloadLink document={<MyDocument
                 accountName={formData.accountName ?? ""}
                 address={formData.address ?? ""}
                 date={formData.date ?? ""}
@@ -427,7 +472,10 @@ function SbiPDF() {
                 {({ loading }) =>
                     loading ? "Generating PDF..." : "Download SBI Statement"
                 }
-            </PDFDownloadLink>
+            </PDFDownloadLink> */}
+            <button onClick={handleDownload}>
+  Download SBI Statement
+</button>
         </div>
     );
 }
