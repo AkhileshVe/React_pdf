@@ -1,13 +1,23 @@
-import { Font } from "@react-pdf/renderer";
-import RobotoRegular from "../../assets/fonts/Roboto-Regular.ttf";
-import RobotoBold from "../../assets/fonts/Roboto-Bold.ttf";
-Font.register({
-    family: "SBI_Font",
-    fonts: [
-        { src: RobotoRegular, fontWeight: "normal" },
-        { src: RobotoBold, fontWeight: "bold" }
-    ]
-});
+// import { Font } from "@react-pdf/renderer";
+// import RobotoRegular from "../../assets/fonts/Roboto-Regular.ttf";
+// import RobotoBold from "../../assets/fonts/Roboto-Bold.ttf";
+// Font.register({
+//     family: "SBI_Font",
+//     fonts: [
+//         { src: RobotoRegular, fontWeight: "normal" },
+//         { src: RobotoBold, fontWeight: "bold" }
+//     ]
+// });
+
+// import NarrowRegular from "../../assets/fonts/LiberationSansNarrow-Regular.ttf";
+// import NarrowBold from "../../assets/fonts/LiberationSansNarrow-Bold.ttf";
+// Font.register({
+//     family: "SBI_Font",
+//     fonts: [
+//         { src: NarrowRegular, fontWeight: "normal" },
+//         { src: NarrowBold, fontWeight: "bold" }
+//     ]
+// });
 
 import {
     Document,
@@ -58,10 +68,10 @@ const changeSpecific = (str) => {
 
 const upper = (val, fallback) =>
     val ? val.toUpperCase() : fallback.toUpperCase();
-
+// Arial
 const styles = StyleSheet.create({
     page: {
-        fontFamily: "SBI_Font", // ✅ yahi lagana hai
+        fontFamily: "Helvetica", 
         padding: 30,
         fontSize: 9.7
     },
@@ -69,7 +79,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginBottom: 10,
         fontWeight: "normal",
-        fontFamily: "SBI_Font"
+        fontFamily: "Helvetica"
     },
     section: {
         marginBottom: 10
@@ -87,10 +97,10 @@ const styles = StyleSheet.create({
         width: "14%",
         padding: 2,
         fontWeight: "bold",
-        fontFamily: "SBI_Font",
+        fontFamily: "Helvetica",
         textAlign: "right",
         borderStyle: "solid",
-        borderWidth: 1,
+        borderWidth: 0.5,
         borderLeftWidth: 0,
         borderTopWidth: 1,
     },
@@ -101,7 +111,7 @@ const styles = StyleSheet.create({
         paddingBottom: 2.5,
         textAlign: "right",
         borderStyle: "solid",
-        borderWidth: 1,
+        borderWidth: 0.5,
         borderLeftWidth: 0,
         borderTopWidth: 0,
     },
@@ -113,7 +123,7 @@ const styles = StyleSheet.create({
         paddingBottom: 2.5,
         borderStyle: "solid",
         fontWeight: "bold",
-        fontFamily: "SBI_Font",
+        fontFamily: "Helvetica",
         borderTopWidth: 1,
         borderBottomWidth: 1
     },
@@ -137,9 +147,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: 2,
         paddingBottom: 2.5,
         fontWeight: "bold",
-        fontFamily: "SBI_Font",
+        fontFamily: "Helvetica",
         borderStyle: "solid",
-        borderWidth: 1,
+        // borderWidth: 1,
+        borderWidth: 0.5,
         borderTopWidth: 1,
     },
     tableColDis: {
@@ -148,9 +159,12 @@ const styles = StyleSheet.create({
         paddingTop: 2,
         paddingHorizontal: 2,
         paddingBottom: 2.5,
-        borderWidth: 1,
+        borderWidth: 0.5,
+        // borderWidth: 1,
         borderTopWidth: 0,
-        flexShrink: 1
+        flexShrink: 1,
+        flexWrap: "nowrap",
+        wordWrap: "break-word"
     },
     tableColHeaderRef: {
         width: "18%",
@@ -158,11 +172,11 @@ const styles = StyleSheet.create({
         paddingHorizontal: 2,
         paddingBottom: 2.5,
         borderStyle: "solid",
-        borderWidth: 1,
+        borderWidth: 0.5,
         borderLeftWidth: 0,
         borderTopWidth: 1,
         fontWeight: "bold",
-        fontFamily: "SBI_Font"
+        fontFamily: "Helvetica"
     },
     tableColRef: {
         width: "18%",
@@ -171,7 +185,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 2,
         paddingBottom: 2.5,
         borderStyle: "solid",
-        borderWidth: 1,
+        borderWidth: 0.5,
         borderLeftWidth: 0,
         borderTopWidth: 0,
     },
@@ -201,6 +215,7 @@ const MyDocument = ({
         subject=""
         keywords=""
         creator=""
+        pdfVersion="1.3"
         producer="iText 2.0.4 (by lowagie.com)"
         creationDate={new Date()}
         modificationDate={new Date()}>
@@ -357,7 +372,7 @@ function SbiPDF() {
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = fileName + ".pdf";
+    a.download = fileName;
     a.click();
 
     URL.revokeObjectURL(url);
@@ -430,25 +445,25 @@ function SbiPDF() {
         <div>
             <Navbar />
 
-            <PDFViewer width="99.7%" height="600"  >
+            <PDFViewer width="100%" height="600"  >
                 <MyDocument
-                    accountName={formData.accountName ?? ""}
-                    address={formData.address ?? ""}
-                    date={formData.date ?? ""}
-                    accountNumber={formData.accountNumber ?? ""}
-                    accountDescription={formData.accountDescription ?? ""}
-                    branch={formData.branch ?? ""}
-                    drawingPower={formData.drawingPower ?? ""}
-                    cifNo={formData.cifNo ?? ""}
-                    ckycrNumber={formData.ckycrNumber ?? ""}
-                    ifsCode={formData.ifsCode ?? ""}
-                    micrCode={formData.micrCode ?? ""}
-                    nominationRegistered={formData.nominationRegistered ?? ""}
-                    balance={formData.balance ?? ""}
+                    accountName={formData?.accountName ?? ""}
+                    address={formData?.address ?? ""}
+                    date={formData?.date ?? ""}
+                    accountNumber={formData?.accountNumber ?? ""}
+                    accountDescription={formData?.accountDescription ?? ""}
+                    branch={formData?.branch ?? ""}
+                    drawingPower={formData?.drawingPower ?? ""}
+                    cifNo={formData?.cifNo ?? ""}
+                    ckycrNumber={formData?.ckycrNumber ?? ""}
+                    ifsCode={formData?.ifsCode ?? ""}
+                    micrCode={formData?.micrCode ?? ""}
+                    nominationRegistered={formData?.nominationRegistered ?? ""}
+                    balance={formData?.balance ?? ""}
                     bankEveryData={bankEveryData}
-                    companyName={formData.salaryCompany ?? ""}
-                    interestRate={formData.interestRate ?? ""}
-                    modeBalance={formData.modeBalance ?? ""}
+                    companyName={formData?.salaryCompany ?? ""}
+                    interestRate={formData?.interestRate ?? ""}
+                    modeBalance={formData?.modeBalance ?? ""}
                 />
             </PDFViewer>
             {/* <PDFDownloadLink document={<MyDocument

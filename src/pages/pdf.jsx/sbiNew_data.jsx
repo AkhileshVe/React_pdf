@@ -354,7 +354,7 @@ const names = [
   "RAVI", "AMIT", "VIJAY", "PANKAJ", "ASHOK",
   "SANJAY", "RAHUL", "IMRAN", "YOGESH",
 
-  "AKHILESH", "ROHIT", "ANKIT", "VIKAS", "SURESH",
+  "ROHIT", "ANKIT", "VIKAS", "SURESH",
   "MAHESH", "RAKESH", "MANOJ", "VINAY", "KUNAL",
   "NITIN", "ARJUN", "KRISHNA", "SHIVAM", "ADITYA",
   "MOHIT", "PRIYA", "KAVITA", "SNEHA", "RIYA",
@@ -376,7 +376,7 @@ function generateUPI() {
   const upi = changeMiddleUPI(randomNumber(12));
   const phone = changePhoneNo(randomNumber(10));
 
-  return `TO TRANSFER- UPI/DR/${upi}/${randomName()} /${randomBank()}/${phone}/Payme-`;
+  return `TO TRANSFER-UPI/DR/${upi}/${randomName()}/${randomBank()}/${phone}/Payme-`;
 }
 
 function Description222() {
@@ -388,7 +388,7 @@ function Description222() {
 function salaryDescription(company) {
   const ifsCode = changeMiddleIfc("SBIN0000743");
   const cifCode = changeMiddlesalary("SBIN0000743");
-  return `BY TRANSFER- NEFT*${ifsCode}*SBI ${cifCode}*${company}*Salary-`;
+  return `BY TRANSFER-NEFT*${ifsCode}*SBI${cifCode}*${company}*Salary-`;
 }
 
 export function generateEveryBankData({
