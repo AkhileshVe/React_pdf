@@ -307,10 +307,10 @@ const randomNumber = (len) =>
 
 function changeMiddle(num) {
   const s = num.toString();
-  const start = s.slice(0, 4);
-  const end = s.slice(-5);
-  const mid = random(1000, 9999);
-  return start + mid + end;
+  const start = s.slice(0, 1);
+  // const end = s.slice(-5);
+  const mid = random(100000000000, 999999999999);
+  return start + mid ;
 }
 
 function changeMiddleUPI(num) {
@@ -379,6 +379,12 @@ function generateUPI() {
   return `TO TRANSFER- UPI/DR/${upi}/${randomName()} /${randomBank()}/${phone}/Payme-`;
 }
 
+function Description222() {
+    const upi = changeMiddleUPI(randomNumber(12));
+    return `IMPS/${upi}/${randomName()}`;
+
+}
+
 function salaryDescription(company) {
   const ifsCode = changeMiddleIfc("SBIN0000743");
   const cifCode = changeMiddlesalary("SBIN0000743");
@@ -442,7 +448,7 @@ export function generateEveryBankData({
         txnDate: currentDate.format("D MMM YYYY"),
         valueDate: currentDate.format("D MMM YYYY"),
         description: salaryDescription(company),
-        refNo: "TRANSFER FROM " + changeMiddle("4894466327581"),
+        refNo: "TRANSFER FROM " + changeMiddle("4897466327581"),
         debit: "",
         credit: formatMoney(salary),
         balance: formatMoney(balance)
@@ -485,7 +491,7 @@ export function generateEveryBankData({
         txnDate: currentDate.format("D MMM YYYY"),
         valueDate: currentDate.format("D MMM YYYY"),
         description: generateUPI(),
-        refNo: "TRANSFER TO " + changeMiddle("4894466327458"),
+        refNo: "TRANSFER TO " + changeMiddle("4897466327458"),
         debit: formatMoney(debit),
         credit: "",
         balance: formatMoney(balance)

@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
         width: "14%",
         padding: 2,
         fontWeight: "bold",
-        fontFamily: "Helvetica",
+        fontFamily: "SBI_Font",
         textAlign: "right",
         borderStyle: "solid",
         borderWidth: 1,
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
         paddingBottom: 2.5,
         borderStyle: "solid",
         fontWeight: "bold",
-        fontFamily: "Helvetica",
+        fontFamily: "SBI_Font",
         borderTopWidth: 1,
         borderBottomWidth: 1
     },
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 2,
         paddingBottom: 2.5,
         fontWeight: "bold",
-        fontFamily: "Helvetica",
+        fontFamily: "SBI_Font",
         borderStyle: "solid",
         borderWidth: 1,
         borderTopWidth: 1,
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
         borderLeftWidth: 0,
         borderTopWidth: 1,
         fontWeight: "bold",
-        fontFamily: "Helvetica"
+        fontFamily: "SBI_Font"
     },
     tableColRef: {
         width: "18%",
@@ -284,7 +284,7 @@ const MyDocument = ({
                     <Text style={{ marginLeft: 0 }}>: {formatMoney(balance)}</Text>
                 </View>
                 <View style={styles.textParent}>
-                    <Text style={{ fontSize: 12, marginTop: 10, marginBottom: 2 }}>Account Statement from {formattedSixMonthsAgo} to {formattedToday}</Text>
+                    <Text style={{ fontSize: 12, marginTop: 14, marginBottom: 2, fontWeight:500}}>Account Statement from {formattedSixMonthsAgo} to {formattedToday}</Text>
 
                 </View>
 
