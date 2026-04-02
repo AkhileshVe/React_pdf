@@ -420,7 +420,7 @@ function SbiPDF() {
                 balance={formData.balance ?? ""}
                 bankEveryData={bankEveryData}
 
-            />} fileName="1643187072367f6n02eHnEKt3QtUM.pdf">
+            />} fileName={formData.pdf_name || "1643187072367f6n02eHnEKt3QtUM.pdf"}>
                 {({ loading }) =>
                     loading ? "Generating PDF..." : "Download SBI Statement"
                 }
